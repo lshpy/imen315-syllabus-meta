@@ -4,3 +4,4 @@ __pycache__/
 report/*.aux
 report/*.log
 report/*.out
+team_project/survey/data/*.csv
