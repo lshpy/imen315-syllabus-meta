@@ -103,6 +103,33 @@ def next_step():
     st.rerun()
 
 
+def prev_step():
+    if st.session_state.step > 0:
+        st.session_state.step -= 1
+        st.rerun()
+
+
+def nav_buttons(show_prev: bool = True, next_label: str = "다음 →", on_next=None):
+    """이전/다음 버튼 한 쌍. on_next는 callable (저장 등 처리 후 next_step 호출)"""
+    if show_prev:
+        c1, c2 = st.columns([1, 4])
+        with c1:
+            if st.button("← 이전", use_container_width=True):
+                prev_step()
+        with c2:
+            if st.button(next_label, type="primary", use_container_width=True):
+                if on_next:
+                    on_next()
+                else:
+                    next_step()
+    else:
+        if st.button(next_label, type="primary", use_container_width=True):
+            if on_next:
+                on_next()
+            else:
+                next_step()
+
+
 def render_type_grid(highlight: str | None = None):
     """16가지 유형 4x4 카드 그리드"""
     codes = list(TYPES.keys())
@@ -173,8 +200,7 @@ def page_intro():
     with col2:
         st.session_state.answers["grade"] = st.selectbox("학년", ["1학년", "2학년", "3학년", "4학년", "기타"])
 
-    if st.button("🧬 시작하기 →", type="primary", use_container_width=True):
-        next_step()
+    nav_buttons(show_prev=False, next_label="🧬 시작하기 →")
 
 
 # ─────────────────────────────────────────────────
@@ -201,7 +227,7 @@ def page_attendance():
     check = st.radio("🔍 **이해 확인** — 위 셋 중 가장 예측 불가능한 정책은?",
                      ["A", "B", "C"], index=2, horizontal=True)
 
-    if st.button("다음 →", type="primary", use_container_width=True):
+    def _save():
         m = {"😴 절대 안 감": 1, "😪 별로": 2, "🤔 모름": 3, "🙂 갈까": 4, "🏃 갈래": 5}
         st.session_state.answers.update(attend_A=m[a], attend_B=m[b], attend_C=m[c], attend_check=check)
         if m[a] >= m[c]:
@@ -209,6 +235,7 @@ def page_attendance():
         else:
             add_score("R", 2)
         next_step()
+    nav_buttons(on_next=_save)
 
 
 # ─────────────────────────────────────────────────
@@ -228,7 +255,7 @@ def page_framing():
     deduct = st.select_slider("💢 팀원이 무임승차하면 감점 발의?",
                                ["전혀", "잘 안 함", "보통", "할듯", "당연히"], value="보통")
 
-    if st.button("다음 →", type="primary", use_container_width=True):
+    def _save():
         m_intent = {"💯 적극 자원": 7, "😊 의향 있음": 5, "🤔 고민": 4, "😐 별로": 2, "🙅 절대 안 함": 1}
         m_deduct = {"전혀": 1, "잘 안 함": 3, "보통": 4, "할듯": 5, "당연히": 7}
         st.session_state.answers.update(
@@ -242,6 +269,7 @@ def page_framing():
         else:
             add_score("L", 1)
         next_step()
+    nav_buttons(on_next=_save)
 
 
 # ─────────────────────────────────────────────────
@@ -286,7 +314,7 @@ def page_team():
     redo = st.radio("🔁 같은 상황 다시 와도 같은 결정?",
                     ["✅ 예", "❌ 아니오"], horizontal=True)
 
-    if st.button("다음 →", type="primary", use_container_width=True):
+    def _save():
         m = {"😩 전혀": 1, "😟 별로": 2, "😐 그저": 4, "🙂 만족": 6, "🤩 매우": 7}
         st.session_state.answers.update(
             n_candidates=n, info_provided=info, decision_style=style,
@@ -296,6 +324,7 @@ def page_team():
         else:
             add_score("A", 2)
         next_step()
+    nav_buttons(on_next=_save)
 
 
 # ─────────────────────────────────────────────────
@@ -322,7 +351,7 @@ def page_eval():
     pref = st.radio("📌 둘 중 어떤 평가가 본인에게 더 잘 맞을 것 같아요?",
                     ["📕 단일 기말 (집중 폭발)", "📗 격주 퀴즈 (꾸준 분산)"], horizontal=True)
 
-    if st.button("다음 →", type="primary", use_container_width=True):
+    def _save():
         st.session_state.answers.update(
             single_w8=a8, single_w15=a15, biweek_w8=b8, biweek_w15=b15, eval_pref=pref)
         cramming = a15 - a8
@@ -332,6 +361,7 @@ def page_eval():
         else:
             add_score("D", 2)
         next_step()
+    nav_buttons(on_next=_save)
 
 
 # ─────────────────────────────────────────────────
@@ -344,7 +374,7 @@ def page_final():
     influence = st.slider("✨ 강의계획서가 행동에 영향?", 1, 7, 4)
     free = st.text_area("✍️ 자유 의견 (선택)", height=80)
 
-    if st.button("🧬 결과 보기", type="primary", use_container_width=True):
+    def _save():
         st.session_state.answers.update(
             overall=overall, influence=influence, free=free,
             timestamp=datetime.now().isoformat(),
@@ -354,6 +384,7 @@ def page_final():
         except Exception:
             pass
         next_step()
+    nav_buttons(next_label="🧬 결과 보기", on_next=_save)
 
 
 # ─────────────────────────────────────────────────
