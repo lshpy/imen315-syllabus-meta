@@ -215,6 +215,28 @@ def render_type_grid(highlight: str | None = None) -> str:
     return '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' + ''.join(cards) + '</div>'
 
 
+# Admin 모드 — ?admin=lshpy2026 URL 파라미터 시 응답 CSV 다운로드
+ADMIN_KEY = "lshpy2026"
+qparams = st.query_params
+if qparams.get("admin") == ADMIN_KEY:
+    st.title("🔐 Admin · 응답 데이터")
+    if DATA_FILE.exists():
+        df_admin = pd.read_csv(DATA_FILE)
+        st.success(f"누적 응답 **{len(df_admin)}**건")
+        st.dataframe(df_admin, use_container_width=True)
+        with open(DATA_FILE, "rb") as f:
+            st.download_button(
+                "📥 CSV 다운로드",
+                data=f,
+                file_name=f"streamlit_responses_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
+    else:
+        st.info("아직 응답 없음.")
+    st.stop()
+
+
 # 진행률
 TOTAL = 7
 if 0 < st.session_state.step < TOTAL:
