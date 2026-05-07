@@ -95,7 +95,46 @@ FAKE_CANDIDATES = [
 ]
 
 
-def save_response(record: dict) -> None:
+def save_to_sheets(record: dict) -> bool:
+    """Google Sheets에 한 행 추가. st.secrets 가 있으면 사용, 없으면 False."""
+    try:
+        if "gcp_service_account" not in st.secrets or "sheet_id" not in st.secrets:
+            return False
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        scopes = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        creds = Credentials.from_service_account_info(
+            dict(st.secrets["gcp_service_account"]), scopes=scopes
+        )
+        client = gspread.authorize(creds)
+        sh = client.open_by_key(st.secrets["sheet_id"])
+        ws = sh.sheet1
+
+        # 헤더 자동 보장
+        existing = ws.row_values(1)
+        if not existing:
+            ws.append_row(list(record.keys()))
+            existing = list(record.keys())
+
+        # 누락된 컬럼 합치기
+        new_keys = [k for k in record.keys() if k not in existing]
+        if new_keys:
+            existing = existing + new_keys
+            ws.update("A1", [existing])
+
+        row = [str(record.get(k, "")) for k in existing]
+        ws.append_row(row)
+        return True
+    except Exception as e:
+        st.toast(f"Sheets 저장 실패: {e}", icon="⚠️")
+        return False
+
+
+def save_to_csv(record: dict) -> None:
     df_new = pd.DataFrame([record])
     if DATA_FILE.exists():
         df_old = pd.read_csv(DATA_FILE)
@@ -103,6 +142,12 @@ def save_response(record: dict) -> None:
     else:
         df = df_new
     df.to_csv(DATA_FILE, index=False)
+
+
+def save_response(record: dict) -> None:
+    """Sheets 우선, 실패 시 CSV 백업"""
+    if not save_to_sheets(record):
+        save_to_csv(record)
 
 
 # ─────────────────────────────────────────────────

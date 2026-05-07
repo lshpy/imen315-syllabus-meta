@@ -1,7 +1,11 @@
 __pycache__/
 *.pyc
 .venv/
+.streamlit/secrets.toml
 report/*.aux
 report/*.log
 report/*.out
 team_project/survey/data/*.csv
+keys/
+*.json
+!**/package*.json
