@@ -1,9 +1,4 @@
-"""IMEN315 강의계획서 인식 조사 — 학습 MBTI 게임
-4가지 차원으로 16개 학습 유형 분석.
-
-실행:
-    streamlit run team_project/survey/streamlit_app.py
-"""
+"""IMEN315 강의계획서 인식 조사 — 학습 MBTI 게임"""
 from __future__ import annotations
 
 import random
@@ -25,56 +20,56 @@ DATA_FILE.parent.mkdir(exist_ok=True)
 
 
 # ─────────────────────────────────────────────────
-# 학습 MBTI 정의
+# 16가지 학습 MBTI
 # ─────────────────────────────────────────────────
-# 4 차원, 각 2 글자 = 16 유형
-#
-# 1. 동기 축 — 손실회피(L) vs 이득추구(G) [Framing/Prospect]
-# 2. 환경 축 — 예측가능(P) vs 무작위적응(R) [Utility Learning]
-# 3. 학습 축 — 분산형(D) vs 집중형(C) [Forgetting Curve]
-# 4. 결정 축 — 직관(I) vs 분석(A) [Working Memory + Satisficing]
 DIMENSIONS = [
     ("동기", "L", "G", "손실 회피", "이득 추구"),
-    ("환경", "P", "R", "예측 가능 선호", "무작위 적응"),
+    ("환경", "P", "R", "예측 가능", "무작위 적응"),
     ("학습", "D", "C", "분산 학습", "집중 학습"),
     ("결정", "I", "A", "직관 결정", "분석 결정"),
 ]
 
-TYPE_PROFILES = {
-    "LPDA": {"emoji": "🛡️", "name": "안정의 분석가",
-             "desc": "위험을 피하고, 예측 가능한 환경에서, 꾸준히 분산 학습하며, 정보를 체계적으로 분석. 가장 모범적인 유형이지만 변화에 약할 수 있음."},
-    "LPDI": {"emoji": "📚", "name": "성실한 직관가",
-             "desc": "안정 환경에서 분산 학습은 잘하지만 결정은 빠르게. 친분·직관 기반. 균형 잡힌 학생."},
-    "LPCA": {"emoji": "🎯", "name": "기말 집중 전략가",
-             "desc": "안정 추구 + 학기말 집중형 + 분석형. 평소엔 살살 하다가 시험 직전 모든 정보 수집해 폭발. 위험."},
-    "LPCI": {"emoji": "🦔", "name": "안전한 벼락치기형",
-             "desc": "고정 환경 좋아하지만 분산 학습은 못 함. 벼락치기 + 직관 의존. 흔한 한국 대학생 표준."},
-    "LRDA": {"emoji": "🦉", "name": "신중한 적응 학자",
-             "desc": "변화에 적응 잘하면서 손실은 피하고 분산 학습. 분석가. 매우 견고한 학습자."},
-    "LRDI": {"emoji": "🐺", "name": "본능적 생존가",
+TYPES = {
+    "LPDA": {"emoji": "🛡️", "name": "안정의 분석가", "color": "#4dabf7",
+             "desc": "위험 피하고 예측 가능한 환경에서 꾸준히 분산 학습 + 체계적 분석. 가장 모범적이지만 변화에 약할 수 있음."},
+    "LPDI": {"emoji": "📚", "name": "성실한 직관가", "color": "#74c0fc",
+             "desc": "안정 환경 + 분산 학습 + 빠른 결정. 직관 의존. 균형 잡힌 학생."},
+    "LPCA": {"emoji": "🎯", "name": "기말 집중 전략가", "color": "#3bc9db",
+             "desc": "안정 추구 + 학기말 집중 + 분석. 평소 살살 + 시험 직전 폭발."},
+    "LPCI": {"emoji": "🦔", "name": "안전한 벼락치기형", "color": "#66d9e8",
+             "desc": "고정 환경 좋아하지만 분산 학습 못 함. 직관 + 벼락치기. 흔한 한국 대학생 표준."},
+    "LRDA": {"emoji": "🦉", "name": "신중한 적응 학자", "color": "#5c7cfa",
+             "desc": "변화에 적응 + 손실 회피 + 분산 학습 + 분석. 매우 견고."},
+    "LRDI": {"emoji": "🐺", "name": "본능적 생존가", "color": "#7950f2",
              "desc": "무작위 환경에서도 분산 학습으로 살아남음. 직관 의존. 위기 대응력 최강."},
-    "LRCA": {"emoji": "🎮", "name": "벼락치기 분석가",
-             "desc": "변동성에 적응 + 학기말 집중 + 분석. 단기 폭발력 최고. 평소엔 게이밍."},
-    "LRCI": {"emoji": "🐌", "name": "도전 회피형 벼락치기",
-             "desc": "변화는 받아들이지만 분산 학습 못 하고 직관에 의존. 가장 운에 의존."},
-
-    "GPDA": {"emoji": "🚀", "name": "동기부여형 모범생",
-             "desc": "이득 추구 + 안정 + 분산 + 분석. 가산점에 강하게 반응하며 체계적 학습. 이상적 유형."},
-    "GPDI": {"emoji": "⚡", "name": "직진 학습자",
-             "desc": "이득 보고 달려가며 안정 환경 + 분산 학습. 직관 결정. 빠르고 효율적."},
-    "GPCA": {"emoji": "🦅", "name": "기말 폭격기",
-             "desc": "이득 추구 + 안정 + 학기말 집중 + 분석. 평소 자기 일 + 시험 직전 폭발. 효율 추구."},
-    "GPCI": {"emoji": "🐯", "name": "타고난 벼락치기 천재",
-             "desc": "이득 보고 단번에 + 직관 + 집중. 평균 이상 성과 거두지만 운 변수 큼."},
-    "GRDA": {"emoji": "🐉", "name": "전천후 도전가",
-             "desc": "이득 추구 + 변동성 OK + 분산 + 분석. 어떤 환경에서도 적응. 리더형."},
-    "GRDI": {"emoji": "🔥", "name": "직진 모험가",
-             "desc": "이득 보고 변화 즐기며 분산 학습. 직관. 활동량 최고."},
-    "GRCA": {"emoji": "🎲", "name": "도박형 천재",
+    "LRCA": {"emoji": "🎮", "name": "벼락치기 분석가", "color": "#9775fa",
+             "desc": "변동성 적응 + 학기말 집중 + 분석. 단기 폭발력 최고. 평소엔 게이밍."},
+    "LRCI": {"emoji": "🐌", "name": "도전 회피형 벼락치기", "color": "#b197fc",
+             "desc": "변화는 받아들이지만 분산 못 하고 직관 의존. 운에 의존."},
+    "GPDA": {"emoji": "🚀", "name": "동기부여형 모범생", "color": "#51cf66",
+             "desc": "이득 추구 + 안정 + 분산 + 분석. 가산점에 강하게 반응 + 체계적. 이상적."},
+    "GPDI": {"emoji": "⚡", "name": "직진 학습자", "color": "#69db7c",
+             "desc": "이득 보고 달려가며 안정 + 분산. 직관. 빠르고 효율적."},
+    "GPCA": {"emoji": "🦅", "name": "기말 폭격기", "color": "#94d82d",
+             "desc": "이득 + 안정 + 학기말 집중 + 분석. 효율 추구."},
+    "GPCI": {"emoji": "🐯", "name": "타고난 벼락치기 천재", "color": "#fcc419",
+             "desc": "이득 + 직관 + 집중. 평균 이상 거두지만 운 변수 큼."},
+    "GRDA": {"emoji": "🐉", "name": "전천후 도전가", "color": "#ff922b",
+             "desc": "이득 + 변동성 + 분산 + 분석. 어떤 환경에서도 적응. 리더형."},
+    "GRDI": {"emoji": "🔥", "name": "직진 모험가", "color": "#ff6b6b",
+             "desc": "이득 + 변화 즐김 + 분산 + 직관. 활동량 최고."},
+    "GRCA": {"emoji": "🎲", "name": "도박형 천재", "color": "#f06595",
              "desc": "이득 + 변동성 + 학기말 집중 + 분석. 위험 감수 + 폭발력. 결과 양극화."},
-    "GRCI": {"emoji": "🌪️", "name": "감각적 직관파",
-             "desc": "이득 추구 + 변동성 + 집중 + 직관. 감으로 살지만 묘하게 잘됨."},
+    "GRCI": {"emoji": "🌪️", "name": "감각적 직관파", "color": "#cc5de8",
+             "desc": "이득 + 변동성 + 집중 + 직관. 감으로 살지만 묘하게 잘됨."},
 }
+
+# 가상 후보 이름 (한국 학생 흔한 이름)
+FAKE_NAMES = [
+    "김민준", "이서연", "박지호", "최예린", "정우진", "강하늘",
+    "윤서아", "조현우", "임지윤", "한도윤", "오나연", "신유진",
+    "권태민", "배소율", "송민재"
+]
 
 
 def save_response(record: dict) -> None:
@@ -96,7 +91,6 @@ if "step" not in st.session_state:
     st.session_state.frame = random.choice(["gain", "loss"])
     st.session_state.n_cand = random.choice([3, 7, 15])
     st.session_state.info_provided = random.choice([True, False])
-    # 4 차원 점수
     st.session_state.scores = {"L": 0, "G": 0, "P": 0, "R": 0, "D": 0, "C": 0, "I": 0, "A": 0}
 
 
@@ -109,6 +103,28 @@ def next_step():
     st.rerun()
 
 
+def render_type_grid(highlight: str | None = None):
+    """16가지 유형 4x4 카드 그리드"""
+    codes = list(TYPES.keys())
+    html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'
+    for code in codes:
+        p = TYPES[code]
+        is_hl = highlight == code
+        border = "border:3px solid #fff;box-shadow:0 0 0 3px " + p["color"] if is_hl else "border:1px solid #e9ecef"
+        scale = "transform:scale(1.05);" if is_hl else ""
+        html += f'''
+        <div style="background:linear-gradient(135deg,{p["color"]}22 0%,{p["color"]}44 100%);
+        {border};{scale}border-radius:10px;padding:10px 6px;text-align:center;
+        transition:all 0.3s">
+            <div style="font-size:1.8em;line-height:1.2">{p["emoji"]}</div>
+            <div style="font-size:0.85em;font-weight:700;color:{p["color"]};margin-top:2px">{code}</div>
+            <div style="font-size:0.7em;color:#495057;line-height:1.2;margin-top:2px">{p["name"]}</div>
+        </div>
+        '''
+    html += '</div>'
+    return html
+
+
 # 진행률
 TOTAL = 7
 if 0 < st.session_state.step < TOTAL:
@@ -117,77 +133,77 @@ if 0 < st.session_state.step < TOTAL:
 
 
 # ─────────────────────────────────────────────────
-# 챕터 0: 인트로
+# 챕터 0: 인트로 + 16 유형 미리보기
 # ─────────────────────────────────────────────────
 def page_intro():
-    st.title("🧬 학습 MBTI")
-    st.caption("IMEN315 인간공학 강의계획서 인식 조사")
     st.markdown(
         """
-        ### 당신은 어떤 학습자인가요?
+        <div style="text-align:center;padding:24px 0">
+            <div style="font-size:3.5em;line-height:1">🧬</div>
+            <div style="font-size:2em;font-weight:800;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">
+                학습 MBTI
+            </div>
+            <div style="color:#868e96;margin-top:4px">IMEN315 인간공학 강의계획서 인식 조사</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-        16가지 학습 유형 중 **당신의 유형**을 인간공학 이론으로 분석합니다.
+    st.markdown("### 16가지 학습 유형 — 당신은 어디에?")
+    st.markdown(render_type_grid(), unsafe_allow_html=True)
 
-        **4가지 차원**:
-        - 🛡️ 손실회피 (L) vs 🚀 이득추구 (G)
-        - 📐 예측가능 선호 (P) vs 🎲 무작위 적응 (R)
-        - 📚 분산학습 (D) vs 🔥 집중학습 (C)
-        - 💭 직관결정 (I) vs 🔍 분석결정 (A)
+    st.markdown("&nbsp;")
+    st.markdown(
+        """
+        ### 🎯 4가지 차원으로 분석
 
-        ⏱️ 약 5분 · 🎁 완료자 추첨 스타벅스 5장 · 🔒 익명
+        - 🛡️ **L** 손실 회피 vs 🚀 **G** 이득 추구
+        - 📐 **P** 예측 가능 vs 🎲 **R** 무작위 적응
+        - 📚 **D** 분산 학습 vs 🔥 **C** 집중 학습
+        - 💭 **I** 직관 결정 vs 🔍 **A** 분석 결정
+
+        ⏱️ 약 5분 · 🔒 익명 · 📊 6/12 보고서에 익명 통계로만 반영
         """
     )
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.session_state.answers["nickname"] = st.text_input(
-            "🧑 익명 닉네임", value="익명의 수강생", max_chars=20
-        )
+        st.session_state.answers["nickname"] = st.text_input("🧑 익명 닉네임", "익명의 수강생", max_chars=20)
     with col2:
-        st.session_state.answers["grade"] = st.selectbox(
-            "학년", ["1학년", "2학년", "3학년", "4학년", "기타"]
-        )
+        st.session_state.answers["grade"] = st.selectbox("학년", ["1학년", "2학년", "3학년", "4학년", "기타"])
 
     if st.button("🧬 시작하기 →", type="primary", use_container_width=True):
         next_step()
 
 
 # ─────────────────────────────────────────────────
-# 챕터 1: 출석 (P vs R 측정)
+# 챕터 1: 출석
 # ─────────────────────────────────────────────────
 def page_attendance():
     st.title("📅 챕터 1 — 출석 정책")
     st.info("**상황**: 비 오는 화요일 아침. 같은 비 오는 날인데 수업 출석 정책이 3가지로 다릅니다.")
 
-    st.markdown("### 🌧️ A — *매주 월요일에만 체크 (예측 가능)*")
-    a = st.select_slider(
-        "이 정책에서 비 오는 화요일에 갈 의향?",
-        ["😴 절대 안 감", "😪 별로", "🤔 모름", "🙂 갈까", "🏃 갈래"],
-        value="🤔 모름", key="att_a")
-
+    st.markdown("### 🌧️ A — *매주 월요일에만 체크*")
+    a = st.select_slider("이 정책에서 비 오는 화요일에 갈 의향?",
+                          ["😴 절대 안 감", "😪 별로", "🤔 모름", "🙂 갈까", "🏃 갈래"],
+                          value="🤔 모름", key="att_a")
     st.markdown("### 🎲 B — *30회 중 7회 무작위 (횟수만 알려줌)*")
-    b = st.select_slider(
-        "갈 의향?",
-        ["😴 절대 안 감", "😪 별로", "🤔 모름", "🙂 갈까", "🏃 갈래"],
-        value="🤔 모름", key="att_b")
-
+    b = st.select_slider("갈 의향?",
+                          ["😴 절대 안 감", "😪 별로", "🤔 모름", "🙂 갈까", "🏃 갈래"],
+                          value="🤔 모름", key="att_b")
     st.markdown("### 🌫️ C — *완전 무작위 (횟수도 비공개)*")
-    c = st.select_slider(
-        "갈 의향?",
-        ["😴 절대 안 감", "😪 별로", "🤔 모름", "🙂 갈까", "🏃 갈래"],
-        value="🤔 모름", key="att_c")
+    c = st.select_slider("갈 의향?",
+                          ["😴 절대 안 감", "😪 별로", "🤔 모름", "🙂 갈까", "🏃 갈래"],
+                          value="🤔 모름", key="att_c")
 
     st.markdown("---")
-    check = st.radio(
-        "🔍 **이해 확인** — 위 셋 중 가장 예측 불가능한 정책은?",
-        ["A", "B", "C"], index=2, horizontal=True)
+    check = st.radio("🔍 **이해 확인** — 위 셋 중 가장 예측 불가능한 정책은?",
+                     ["A", "B", "C"], index=2, horizontal=True)
 
     if st.button("다음 →", type="primary", use_container_width=True):
         m = {"😴 절대 안 감": 1, "😪 별로": 2, "🤔 모름": 3, "🙂 갈까": 4, "🏃 갈래": 5}
-        st.session_state.answers.update(
-            attend_A=m[a], attend_B=m[b], attend_C=m[c], attend_check=check)
-
-        # P vs R 측정: A에서 잘 가면 P, C에서 잘 가면 R
+        st.session_state.answers.update(attend_A=m[a], attend_B=m[b], attend_C=m[c], attend_check=check)
         if m[a] >= m[c]:
             add_score("P", 2)
         else:
@@ -196,7 +212,7 @@ def page_attendance():
 
 
 # ─────────────────────────────────────────────────
-# 챕터 2: 팀장 인센티브 (L vs G)
+# 챕터 2: 팀장 인센티브
 # ─────────────────────────────────────────────────
 def page_framing():
     st.title("👑 챕터 2 — 팀장 정책")
@@ -207,37 +223,29 @@ def page_framing():
     else:
         st.error("📢 **교수님**: \"팀장 안 맡으면 **-10점 차감**됩니다...\"")
 
-    intent = st.radio(
-        "🤚 자원하시겠습니까?",
-        ["💯 적극 자원", "😊 의향 있음", "🤔 고민", "😐 별로", "🙅 절대 안 함"], index=2)
-
-    deduct = st.select_slider(
-        "💢 팀원이 무임승차하면 감점 발의?",
-        ["전혀", "잘 안 함", "보통", "할듯", "당연히"], value="보통")
+    intent = st.radio("🤚 자원하시겠습니까?",
+                       ["💯 적극 자원", "😊 의향 있음", "🤔 고민", "😐 별로", "🙅 절대 안 함"], index=2)
+    deduct = st.select_slider("💢 팀원이 무임승차하면 감점 발의?",
+                               ["전혀", "잘 안 함", "보통", "할듯", "당연히"], value="보통")
 
     if st.button("다음 →", type="primary", use_container_width=True):
         m_intent = {"💯 적극 자원": 7, "😊 의향 있음": 5, "🤔 고민": 4, "😐 별로": 2, "🙅 절대 안 함": 1}
         m_deduct = {"전혀": 1, "잘 안 함": 3, "보통": 4, "할듯": 5, "당연히": 7}
-
         st.session_state.answers.update(
-            frame=st.session_state.frame,
-            leader_intent=m_intent[intent],
-            deduct_intent=m_deduct[deduct])
-
-        # L vs G 측정
+            frame=st.session_state.frame, leader_intent=m_intent[intent], deduct_intent=m_deduct[deduct])
         if st.session_state.frame == "loss" and m_intent[intent] >= 5:
-            add_score("L", 2)  # 손실 회피 강함
+            add_score("L", 2)
         elif st.session_state.frame == "gain" and m_intent[intent] >= 5:
-            add_score("G", 2)  # 이득 추구 강함
+            add_score("G", 2)
         elif st.session_state.frame == "loss" and m_intent[intent] <= 3:
-            add_score("G", 1)  # 손실 위협에도 안 흔들림 = 이득 추구형
+            add_score("G", 1)
         else:
             add_score("L", 1)
         next_step()
 
 
 # ─────────────────────────────────────────────────
-# 챕터 3: 팀 구성 (I vs A)
+# 챕터 3: 팀 구성 (가상 이름)
 # ─────────────────────────────────────────────────
 def page_team():
     st.title("👥 챕터 3 — 팀원 5명 선택")
@@ -246,46 +254,43 @@ def page_team():
 
     st.markdown(f"**상황**: 후보 **{n}명** 중 5명을 골라야 합니다.")
 
-    if info:
-        st.success("📋 **프로필 카드** 제공됨")
-        rng = random.Random(42)
-        skills = ["AI", "통계", "디자인", "발표", "코딩", "리서치", "관리"]
-        cands = [{
-            "이름": f"후보 {i+1}",
+    rng = random.Random(42)
+    skills = ["AI", "통계", "디자인", "발표", "코딩", "리서치", "관리"]
+    name_pool = FAKE_NAMES.copy()
+    rng.shuffle(name_pool)
+    cands = []
+    for i in range(n):
+        cands.append({
+            "이름": name_pool[i],
             "역량": rng.randint(5, 10),
-            "관심": rng.choice(skills),
+            "관심분야": rng.choice(skills),
             "가용시간": rng.randint(1, 5),
             "경험": rng.choice(["많음", "보통", "적음"]),
-        } for i in range(n)]
+        })
+
+    if info:
+        st.success("📋 학과에서 **프로필 카드**를 제공했습니다")
         st.dataframe(pd.DataFrame(cands), use_container_width=True, hide_index=True)
     else:
-        st.warning("❗ **이름만** 알 수 있음")
-        st.write(", ".join([f"후보 {i+1}" for i in range(n)]))
+        st.warning("❗ **이름만** 알 수 있습니다")
+        st.markdown("&nbsp;&nbsp;".join([f"🧑 {c['이름']}" for c in cands]))
 
     st.markdown("---")
-
-    style = st.radio(
-        "🎯 어떻게 결정하시겠어요?",
-        ["💭 직감으로 빠르게 5명 픽", "🔍 정보 다 비교한 후 신중히",
-         "🤝 친한 사람부터 채워넣기", "📊 점수 매겨서 상위 5명"],
-        index=1)
-
-    sat = st.select_slider(
-        "🎯 결과에 만족할까요?",
-        ["😩 전혀", "😟 별로", "😐 그저", "🙂 만족", "🤩 매우"], value="😐 그저")
-
-    redo = st.radio(
-        "🔁 같은 상황 다시 와도 같은 결정?",
-        ["✅ 예", "❌ 아니오"], horizontal=True)
+    style = st.radio("🎯 어떻게 결정하시겠어요?",
+                     ["💭 직감으로 빠르게 5명 픽",
+                      "🔍 정보 다 비교한 후 신중히",
+                      "🤝 친한 사람부터 채워넣기",
+                      "📊 점수 매겨서 상위 5명"], index=1)
+    sat = st.select_slider("🎯 결과에 만족할까요?",
+                            ["😩 전혀", "😟 별로", "😐 그저", "🙂 만족", "🤩 매우"], value="😐 그저")
+    redo = st.radio("🔁 같은 상황 다시 와도 같은 결정?",
+                    ["✅ 예", "❌ 아니오"], horizontal=True)
 
     if st.button("다음 →", type="primary", use_container_width=True):
         m = {"😩 전혀": 1, "😟 별로": 2, "😐 그저": 4, "🙂 만족": 6, "🤩 매우": 7}
         st.session_state.answers.update(
-            n_candidates=n, info_provided=info,
-            decision_style=style, team_sat=m[sat],
-            team_redo=("yes" if "예" in redo else "no"))
-
-        # I vs A 측정
+            n_candidates=n, info_provided=info, decision_style=style,
+            team_sat=m[sat], team_redo=("yes" if "예" in redo else "no"))
         if "직감" in style or "친한" in style:
             add_score("I", 2)
         else:
@@ -294,7 +299,7 @@ def page_team():
 
 
 # ─────────────────────────────────────────────────
-# 챕터 4: 평가 체계 (D vs C)
+# 챕터 4: 평가 체계
 # ─────────────────────────────────────────────────
 def page_eval():
     st.title("📚 챕터 4 — 평가 체계")
@@ -314,16 +319,12 @@ def page_eval():
     with c2:
         b15 = st.number_input("🔥 15주차", 0.0, 40.0, 12.0, 0.5, key="b15")
 
-    pref = st.radio(
-        "📌 둘 중 어떤 평가가 본인에게 더 잘 맞을 것 같아요?",
-        ["📕 단일 기말 (집중 폭발)", "📗 격주 퀴즈 (꾸준 분산)"], horizontal=True)
+    pref = st.radio("📌 둘 중 어떤 평가가 본인에게 더 잘 맞을 것 같아요?",
+                    ["📕 단일 기말 (집중 폭발)", "📗 격주 퀴즈 (꾸준 분산)"], horizontal=True)
 
     if st.button("다음 →", type="primary", use_container_width=True):
         st.session_state.answers.update(
             single_w8=a8, single_w15=a15, biweek_w8=b8, biweek_w15=b15, eval_pref=pref)
-
-        # D vs C 측정
-        # 단일 기말의 학기말 폭발이 클수록 C형
         cramming = a15 - a8
         spreading = b15 - b8
         if cramming > spreading + 3 or "단일" in pref:
@@ -342,11 +343,10 @@ def page_final():
     overall = st.slider("🎓 IMEN315 강의계획서 만족도", 1, 7, 4)
     influence = st.slider("✨ 강의계획서가 행동에 영향?", 1, 7, 4)
     free = st.text_area("✍️ 자유 의견 (선택)", height=80)
-    contact = st.text_input("☕ 추첨 연락처 (선택)")
 
     if st.button("🧬 결과 보기", type="primary", use_container_width=True):
         st.session_state.answers.update(
-            overall=overall, influence=influence, free=free, contact=contact,
+            overall=overall, influence=influence, free=free,
             timestamp=datetime.now().isoformat(),
             scores=str(st.session_state.scores))
         try:
@@ -357,110 +357,79 @@ def page_final():
 
 
 # ─────────────────────────────────────────────────
-# 챕터 6: 학습 MBTI 결과
+# 챕터 6: 결과
 # ─────────────────────────────────────────────────
 def page_result():
     s = st.session_state.scores
 
-    # 4 글자 결정
     code = ""
     code += "L" if s["L"] >= s["G"] else "G"
     code += "P" if s["P"] >= s["R"] else "R"
     code += "D" if s["D"] >= s["C"] else "C"
     code += "I" if s["I"] >= s["A"] else "A"
 
-    profile = TYPE_PROFILES.get(code, {"emoji": "❓", "name": "분석 중", "desc": ""})
+    p = TYPES.get(code, {"emoji": "❓", "name": "분석 중", "desc": "", "color": "#868e96"})
 
     st.balloons()
     st.markdown(
         f"""
-        <div style="text-align:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-        color:white;padding:32px 16px;border-radius:16px;margin:8px 0">
-        <div style="font-size:0.9em;opacity:0.85">당신의 학습 MBTI</div>
-        <div style="font-size:4em;line-height:1.1;margin:8px 0">{profile['emoji']}</div>
-        <div style="font-size:3em;font-weight:800;letter-spacing:0.15em">{code}</div>
-        <div style="font-size:1.6em;margin-top:8px">{profile['name']}</div>
+        <div style="text-align:center;background:linear-gradient(135deg,{p["color"]} 0%,{p["color"]}cc 100%);
+        color:white;padding:32px 16px;border-radius:16px;margin:8px 0;
+        box-shadow:0 8px 24px {p["color"]}55">
+        <div style="font-size:0.9em;opacity:0.9">당신의 학습 MBTI</div>
+        <div style="font-size:5em;line-height:1.1;margin:8px 0">{p['emoji']}</div>
+        <div style="font-size:3.5em;font-weight:900;letter-spacing:0.15em">{code}</div>
+        <div style="font-size:1.6em;margin-top:8px;font-weight:600">{p['name']}</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    st.markdown(f"**해설**: {profile['desc']}")
+    st.markdown(f"**해설**: {p['desc']}")
 
     st.markdown("---")
     st.subheader("📊 4가지 차원 점수")
 
-    dim_data = []
     for label, l1, l2, name1, name2 in DIMENSIONS:
         v1, v2 = s[l1], s[l2]
         total = v1 + v2 if (v1 + v2) > 0 else 1
         pct1 = round(100 * v1 / total)
         pct2 = 100 - pct1
-        winner = l1 if v1 >= v2 else l2
-        dim_data.append({
-            "차원": label,
-            f"{l1} ({name1})": pct1,
-            f"{l2} ({name2})": pct2,
-            "결과": winner,
-        })
-
-    for d in dim_data:
         cols = st.columns([1, 4, 1])
         with cols[0]:
-            st.write(f"**{d['차원']}**")
+            st.write(f"**{label}**")
         with cols[1]:
-            keys = list(d.keys())
-            left_key, right_key = keys[1], keys[2]
-            left_val, right_val = d[left_key], d[right_key]
-            st.write(f"{left_key} **{left_val}%** ⬛ — {right_key} **{right_val}%**")
-            st.progress(left_val / 100)
+            st.write(f"{l1} ({name1}) **{pct1}%** — **{pct2}%** ({name2}) {l2}")
+            st.progress(pct1 / 100)
         with cols[2]:
-            st.metric("", d["결과"])
+            winner = l1 if v1 >= v2 else l2
+            st.metric("", winner)
 
     st.markdown("---")
-    st.subheader("🧬 16가지 유형 (당신은 강조)")
-
-    grid = []
-    codes = list(TYPE_PROFILES.keys())
-    for i in range(0, 16, 4):
-        row = []
-        for c in codes[i:i+4]:
-            p = TYPE_PROFILES[c]
-            mark = "🌟" if c == code else "·"
-            row.append(f"{mark} {p['emoji']} **{c}**\n{p['name']}")
-        grid.append(row)
-
-    for row in grid:
-        cols = st.columns(4)
-        for col, item in zip(cols, row):
-            col.markdown(item)
+    st.subheader("🧬 16가지 유형 (당신 위치 강조)")
+    st.markdown(render_type_grid(highlight=code), unsafe_allow_html=True)
 
     st.markdown("---")
 
-    # 인간공학 인사이트
     a = st.session_state.answers
     if a.get("frame") == "loss" and a.get("leader_intent", 0) >= 5:
         st.info(
             "💡 **흥미로운 발견** — 당신은 '-10점 차감' 시나리오에서 자원 의도가 높았어요. "
-            "이건 **Prospect Theory(Tversky & Kahneman)**가 예측한 인류 평균 — "
-            "사람은 손실을 이득보다 약 2배 강하게 느낍니다. 당신은 이 효과에 강하게 반응."
+            "**Prospect Theory(Tversky & Kahneman)**가 예측한 인류 평균 — "
+            "사람은 손실을 이득보다 약 2배 강하게 느낍니다."
         )
 
     cramming = a.get("single_w15", 0) - a.get("single_w8", 0)
     if cramming > 5:
         st.warning(
             f"⚠️ **벼락치기 패턴 감지** — 단일 기말 시나리오에서 학기말 학습이 {cramming:.0f}h 증가. "
-            "이는 **Forgetting Curve (Ebbinghaus 1885)**가 예측하는 비효율 패턴이에요. "
+            "**Forgetting Curve(Ebbinghaus)** 가 예측하는 비효율 패턴이에요. "
             "분산 학습이 인출 시간을 약 3.4배 단축한다는 시뮬 결과 있음."
         )
 
     st.markdown("---")
-    st.success(
-        "🙇 **응답 감사합니다!** 결과는 6/12 보고서 제출 후 단톡에 익명 요약 공유. "
-        "기프티콘 추첨은 6/3 발표."
-    )
-
-    st.caption(f"_(분석 기반: 응답 데이터 → 4 차원 점수 → 16 유형 매핑. 자세한 이론은 [GitHub](https://github.com/lshpy/imen315-syllabus-meta) 참고)_")
+    st.success("🙇 **응답 감사합니다!** 결과는 6/12 보고서 제출 후 단톡에 익명 요약으로 공유됩니다.")
+    st.caption("자세한 이론은 [GitHub](https://github.com/lshpy/imen315-syllabus-meta) 참고")
 
     if st.button("🔁 다른 친구 권유하기 (처음부터)"):
         for k in list(st.session_state.keys()):
