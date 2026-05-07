@@ -237,6 +237,140 @@ if qparams.get("admin") == ADMIN_KEY:
     st.stop()
 
 
+# Debug 모드 — ?debug=lshpy2026 URL 파라미터 시 Sheets 연결 진단
+if qparams.get("debug") == ADMIN_KEY:
+    st.title("🔧 Debug · Sheets 연결 진단")
+
+    # 1. Secrets 로드 확인
+    st.subheader("1️⃣ Secrets 파일 로드 확인")
+    try:
+        sheet_id = st.secrets.get("sheet_id", None)
+        gcp = st.secrets.get("gcp_service_account", None)
+        if sheet_id and gcp:
+            st.success(f"✅ Secrets 로드됨")
+            st.code(f"sheet_id: {sheet_id}\nclient_email: {gcp.get('client_email', '?')}", language="text")
+        else:
+            st.error("❌ secrets.toml 의 sheet_id 또는 gcp_service_account 가 없음")
+            st.stop()
+    except Exception as e:
+        st.error(f"❌ Secrets 로드 실패: {e}")
+        st.stop()
+
+    # 2. 인증
+    st.subheader("2️⃣ Google 인증")
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+        scopes = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        creds = Credentials.from_service_account_info(dict(gcp), scopes=scopes)
+        client = gspread.authorize(creds)
+        st.success("✅ 인증 성공")
+    except Exception as e:
+        st.error(f"❌ 인증 실패: {type(e).__name__}: {e}")
+        st.info("→ private_key 형식 문제 가능성 (줄바꿈 \\n 살아있는지 확인)")
+        st.stop()
+
+    # 3. Sheet 열기
+    st.subheader("3️⃣ Sheet 접근")
+    try:
+        sh = client.open_by_key(sheet_id)
+        st.success(f"✅ Sheet 열기 성공: **{sh.title}**")
+    except Exception as e:
+        st.error(f"❌ Sheet 열기 실패: {type(e).__name__}: {e}")
+        st.info("→ Sheet 공유에 서비스 계정 이메일 추가했는지 / Sheet ID 정확한지 확인")
+        st.info(f"→ Sheets API + Drive API가 활성화됐는지 확인: https://console.cloud.google.com/apis/library?project={gcp.get('project_id', '')}")
+        st.stop()
+
+    # 4. 쓰기 테스트
+    st.subheader("4️⃣ 쓰기 테스트")
+    try:
+        ws = sh.sheet1
+        ws.append_row(["debug_test", datetime.now().isoformat(), "성공"])
+        st.success("✅ 쓰기 테스트 성공! Sheet 가서 새 행 확인하세요.")
+    except Exception as e:
+        st.error(f"❌ 쓰기 실패: {type(e).__name__}: {e}")
+
+    # 5. Sheet 정식 초기화
+    st.subheader("5️⃣ Sheet 정식 초기화")
+    st.caption("응답 컬럼 헤더 + 분석 탭 자동 생성 (1회만 실행)")
+    if st.button("🛠️ 시트 초기화 실행", type="primary"):
+        try:
+            # 응답 탭 (sheet1) 헤더 설정
+            HEADERS = [
+                "timestamp", "nickname", "grade",
+                "attend_A", "attend_B", "attend_C", "attend_check",
+                "frame", "leader_intent", "deduct_intent",
+                "n_candidates", "info_provided", "decision_style",
+                "picked_names", "avg_closeness", "avg_ability",
+                "friendship_bias", "ability_score", "decision_time_sec",
+                "team_sat", "team_redo",
+                "single_w8", "single_w15", "biweek_w8", "biweek_w15", "eval_pref",
+                "overall", "influence", "free", "scores",
+            ]
+            ws = sh.sheet1
+            # 기존 데이터 백업 후 클리어
+            existing_values = ws.get_all_values()
+            ws.clear()
+            ws.update_title("응답")
+            ws.append_row(HEADERS)
+            # 헤더 굵게
+            ws.format("A1:AD1", {"textFormat": {"bold": True}, "backgroundColor": {"red": 0.9, "green": 0.95, "blue": 1.0}})
+            ws.freeze(rows=1)
+
+            # 기존 응답이 있었으면 다시 추가 시도 (헤더 매칭)
+            restored = 0
+            if len(existing_values) > 1:
+                old_headers = existing_values[0]
+                for row in existing_values[1:]:
+                    rec = dict(zip(old_headers, row))
+                    new_row = [rec.get(h, "") for h in HEADERS]
+                    ws.append_row(new_row)
+                    restored += 1
+
+            # 분석 탭 추가
+            try:
+                analysis = sh.add_worksheet(title="분석", rows=50, cols=10)
+            except Exception:
+                analysis = sh.worksheet("분석")
+
+            analysis_rows = [
+                ["IMEN315 학습 MBTI 응답 실시간 대시보드", "", "", ""],
+                ["", "", "", ""],
+                ["📊 응답자 수", "=COUNTA(응답!A2:A)", "", ""],
+                ["", "", "", ""],
+                ["🧬 16 유형 분포", "", "", ""],
+                ["코드", "이름", "응답 수", "비율"],
+                ["LPDA", "안정의 분석가", '=COUNTIF(응답!AD:AD,"*\'L\': "*"\'P\': "*"\'D\': "*"\'A\': "*")', "=C7/$B$3"],
+                ["", "", "", ""],
+                ["🛡️ vs 🚀 동기 차원", "", "", ""],
+                ["손실 회피 (L) > 이득 추구 (G)", '=COUNTIF(응답:응답!AD2:AD,"*L\': 2*")', "", ""],
+                ["", "", "", ""],
+                ["⏱️ 평균 결정 시간 (팀 구성)", "=AVERAGE(응답!S2:S)", "초", ""],
+                ["", "", "", ""],
+                ["🤝 친분 편향 평균", "=AVERAGE(응답!Q2:Q)", "(0~1)", ""],
+                ["📈 역량 점수 평균", "=AVERAGE(응답!R2:R)", "(0~1)", ""],
+                ["", "", "", ""],
+                ["📅 시간별 응답 (최근)", "", "", ""],
+                ["timestamp", "닉네임", "유형", "결정시간"],
+            ]
+            analysis.clear()
+            for r in analysis_rows:
+                analysis.append_row(r)
+            analysis.format("A1", {"textFormat": {"bold": True, "fontSize": 14}})
+            analysis.format("A3:A18", {"textFormat": {"bold": True}})
+
+            st.success(f"✅ 초기화 완료! 응답 탭 헤더 {len(HEADERS)}개 + 분석 탭 생성. 기존 응답 {restored}개 복원.")
+            st.balloons()
+            st.markdown(f"[📊 시트 열기]({sh.url})")
+        except Exception as e:
+            st.error(f"❌ 초기화 실패: {type(e).__name__}: {e}")
+
+    st.stop()
+
+
 # 진행률
 TOTAL = 7
 if 0 < st.session_state.step < TOTAL:
