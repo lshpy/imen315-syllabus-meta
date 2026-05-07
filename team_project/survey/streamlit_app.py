@@ -64,23 +64,34 @@ TYPES = {
              "desc": "이득 + 변동성 + 집중 + 직관. 감으로 살지만 묘하게 잘됨."},
 }
 
-# 가상 후보 — 이름 + 관계 설명 (다양성: 한국·외국·관계)
+# 가상 후보 풀 — 친밀도(closeness) × 역량(ability) 트레이드오프 설계
+# satisficing 측정: 친분 높은 후보는 역량 중간, 역량 최고는 친분 낮음
+# → 정보 미제공 조건에서 친한 사람 고르면 친분 편향 점수 ↑ (역량 점수 ↓)
 FAKE_CANDIDATES = [
-    {"name": "민준", "rel": "1학년 때부터 친한 동기"},
-    {"name": "James", "rel": "수업 같이 듣는 교환학생"},
-    {"name": "서연", "rel": "친한 친구의 룸메이트"},
-    {"name": "Sarah", "rel": "학회 활동 같이 한 외국인"},
-    {"name": "지호", "rel": "얼굴만 아는 같은 과"},
-    {"name": "Emma", "rel": "동아리 부원, 영어 잘함"},
-    {"name": "현우 선배", "rel": "조교 경험 있는 4학년"},
-    {"name": "예린", "rel": "MT에서 친해진 동기"},
-    {"name": "Michael", "rel": "스터디 그룹에서 만난 친구"},
-    {"name": "도윤", "rel": "랩 인턴 같이 했던"},
-    {"name": "수아", "rel": "이번 학기 처음 본 동기"},
-    {"name": "Olivia", "rel": "기숙사 같은 층 사는"},
-    {"name": "유진", "rel": "프로젝트 같이 했던 신뢰감"},
-    {"name": "태민", "rel": "팀플 한 번 한 적 있음"},
-    {"name": "Daniel", "rel": "공모전 팀에서 본 적 있음"},
+    # 친분 ★★★★★ (최고) — 역량 중간 (5~7)
+    {"name": "민준", "rel": "1학년 때부터 친한 동기", "closeness": 5, "ability": 6, "skill": "관리"},
+    {"name": "예린", "rel": "MT에서 친해진 동기", "closeness": 5, "ability": 5, "skill": "디자인"},
+    {"name": "도윤", "rel": "룸메이트, 매일 같이 공부", "closeness": 5, "ability": 7, "skill": "리서치"},
+
+    # 친분 ★★★★ — 역량 중간~약간 높음 (6~8)
+    {"name": "서연", "rel": "친한 친구의 룸메이트", "closeness": 4, "ability": 7, "skill": "발표"},
+    {"name": "수아", "rel": "스터디 그룹 멤버", "closeness": 4, "ability": 6, "skill": "통계"},
+    {"name": "유진", "rel": "프로젝트 같이 한 신뢰감", "closeness": 4, "ability": 8, "skill": "코딩"},
+
+    # 친분 ★★★ — 역량 다양 (5~9)
+    {"name": "James", "rel": "수업 같이 듣는 교환학생", "closeness": 3, "ability": 9, "skill": "AI"},
+    {"name": "지호", "rel": "얼굴만 아는 같은 과", "closeness": 3, "ability": 8, "skill": "통계"},
+    {"name": "Sarah", "rel": "학회 활동 같이 한 외국인", "closeness": 3, "ability": 9, "skill": "리서치"},
+
+    # 친분 ★★ — 역량 높음 (8~10)
+    {"name": "Michael", "rel": "공모전 1번 같이 한", "closeness": 2, "ability": 10, "skill": "코딩"},
+    {"name": "현우 선배", "rel": "조교 경험 있는 4학년", "closeness": 2, "ability": 10, "skill": "관리"},
+    {"name": "Emma", "rel": "동아리 부원 영어 잘함", "closeness": 2, "ability": 9, "skill": "발표"},
+
+    # 친분 ★ (낮음) — 역량 최고 (9~10)
+    {"name": "Daniel", "rel": "이름만 들어본 능력자", "closeness": 1, "ability": 10, "skill": "AI"},
+    {"name": "Olivia", "rel": "타과지만 실력 좋은", "closeness": 1, "ability": 10, "skill": "디자인"},
+    {"name": "태민", "rel": "한 번 본 적 있는", "closeness": 1, "ability": 9, "skill": "AI"},
 ]
 
 
@@ -284,55 +295,104 @@ def page_framing():
 # 챕터 3: 팀 구성 (가상 이름)
 # ─────────────────────────────────────────────────
 def page_team():
-    st.title("👥 챕터 3 — 팀원 5명 선택")
+    st.title("👥 챕터 3 — 팀원 5명 직접 선택")
     n = st.session_state.n_cand
     info = st.session_state.info_provided
 
-    st.markdown(f"**상황**: 후보 **{n}명** 중 5명을 골라야 합니다.")
+    # 페이지 진입 시간 기록 (결정 시간 측정용)
+    if "team_start_time" not in st.session_state:
+        st.session_state.team_start_time = datetime.now()
 
+    st.markdown(f"**상황**: 후보 **{n}명** 중 **정확히 5명**을 직접 선택하세요.")
+
+    # 후보 풀 무작위 추출 (시드 고정으로 같은 응답자 그룹 내 일관성)
     rng = random.Random(42)
-    skills = ["AI", "통계", "디자인", "발표", "코딩", "리서치", "관리"]
     pool = FAKE_CANDIDATES.copy()
     rng.shuffle(pool)
-    cands = []
-    for i in range(n):
-        cands.append({
-            "이름": pool[i]["name"],
-            "관계": pool[i]["rel"],
-            "역량": rng.randint(5, 10),
-            "관심분야": rng.choice(skills),
-            "가용시간": rng.randint(1, 5),
-            "경험": rng.choice(["많음", "보통", "적음"]),
-        })
+    cands = pool[:n]
 
     if info:
-        st.success("📋 학과에서 **프로필 카드**를 제공했습니다 (이름·관계·역량·관심·시간·경험)")
-        st.dataframe(pd.DataFrame(cands), use_container_width=True, hide_index=True)
+        st.success("📋 **프로필 카드 제공** — 이름·관계·역량·관심분야 (정보 충분)")
+        # 표 보이기
+        df_show = pd.DataFrame([{
+            "이름": c["name"],
+            "관계": c["rel"],
+            "역량(1-10)": c["ability"],
+            "관심": c["skill"],
+        } for c in cands])
+        st.dataframe(df_show, use_container_width=True, hide_index=True)
     else:
-        st.warning("❗ **이름과 관계만** 알 수 있습니다")
-        for c in cands:
-            st.markdown(f"🧑 **{c['이름']}** _{c['관계']}_")
+        st.warning("❗ **이름·관계만** — 역량 정보 없음 (제한된 정보)")
+        cols = st.columns(min(n, 5))
+        for i, c in enumerate(cands):
+            with cols[i % len(cols)]:
+                st.markdown(f"🧑 **{c['name']}**")
+                st.caption(c["rel"])
 
     st.markdown("---")
-    style = st.radio("🎯 어떻게 결정하시겠어요?",
-                     ["💭 직감으로 빠르게 5명 픽",
-                      "🔍 정보 다 비교한 후 신중히",
-                      "🤝 친한 사람부터 채워넣기",
-                      "📊 점수 매겨서 상위 5명"], index=1)
-    sat = st.select_slider("🎯 결과에 만족할까요?",
+    st.markdown("### 🎯 5명을 선택하세요")
+
+    options = [f"{c['name']} ({c['rel']})" for c in cands]
+    picked = st.multiselect(
+        "팀원 5명 (정확히 5명까지)",
+        options,
+        max_selections=5,
+        placeholder="후보 풀에서 5명 고르기",
+    )
+
+    if len(picked) != 5:
+        st.info(f"현재 {len(picked)}/5명 선택. 5명 채워주세요.")
+
+    sat = st.select_slider("🎯 본인의 선택에 만족합니까?",
                             ["😩 전혀", "😟 별로", "😐 그저", "🙂 만족", "🤩 매우"], value="😐 그저")
-    redo = st.radio("🔁 같은 상황 다시 와도 같은 결정?",
+    redo = st.radio("🔁 같은 상황 다시 와도 같은 5명?",
                     ["✅ 예", "❌ 아니오"], horizontal=True)
 
     def _save():
+        if len(picked) != 5:
+            st.error("정확히 5명을 선택해주세요!")
+            return
+
+        # 선택된 후보 매핑
+        picked_names = [p.split(" (")[0] for p in picked]
+        picked_cands = [c for c in cands if c["name"] in picked_names]
+
+        # 측정 지표 계산
+        avg_closeness = sum(c["closeness"] for c in picked_cands) / 5
+        avg_ability = sum(c["ability"] for c in picked_cands) / 5
+        # 정규화된 친분 편향 점수 (0~1) — 가장 친한 5명 골랐을 때가 1.0
+        top5_closeness = sorted([c["closeness"] for c in cands], reverse=True)[:5]
+        max_closeness = sum(top5_closeness) / 5
+        friendship_bias = avg_closeness / max_closeness if max_closeness > 0 else 0
+        # 역량 점수도 정규화
+        top5_ability = sorted([c["ability"] for c in cands], reverse=True)[:5]
+        max_ability = sum(top5_ability) / 5
+        ability_score = avg_ability / max_ability if max_ability > 0 else 0
+
+        decision_time_sec = (datetime.now() - st.session_state.team_start_time).total_seconds()
+
         m = {"😩 전혀": 1, "😟 별로": 2, "😐 그저": 4, "🙂 만족": 6, "🤩 매우": 7}
         st.session_state.answers.update(
-            n_candidates=n, info_provided=info, decision_style=style,
-            team_sat=m[sat], team_redo=("yes" if "예" in redo else "no"))
-        if "직감" in style or "친한" in style:
+            n_candidates=n, info_provided=info,
+            picked_names=";".join(picked_names),
+            avg_closeness=round(avg_closeness, 2),
+            avg_ability=round(avg_ability, 2),
+            friendship_bias=round(friendship_bias, 3),
+            ability_score=round(ability_score, 3),
+            decision_time_sec=round(decision_time_sec, 1),
+            team_sat=m[sat],
+            team_redo=("yes" if "예" in redo else "no"),
+        )
+
+        # I vs A 점수: 친분 편향 높으면 I (직관/친분), 역량 점수 높으면 A (분석)
+        if friendship_bias > 0.75:
             add_score("I", 2)
-        else:
+        elif ability_score > 0.85:
             add_score("A", 2)
+        else:
+            add_score("I", 1)
+            add_score("A", 1)
+
         next_step()
     nav_buttons(on_next=_save)
 
@@ -468,6 +528,24 @@ def page_result():
             "**Forgetting Curve(Ebbinghaus)** 가 예측하는 비효율 패턴이에요. "
             "분산 학습이 인출 시간을 약 3.4배 단축한다는 시뮬 결과 있음."
         )
+
+    fb = a.get("friendship_bias", 0)
+    abil = a.get("ability_score", 0)
+    if fb > 0.75 and not a.get("info_provided"):
+        st.warning(
+            f"🤝 **친분 휴리스틱 발현** — 정보 미제공 조건에서 친분 편향 점수 **{fb:.0%}**, "
+            f"역량 점수 **{abil:.0%}**. **Satisficing(Simon)** 이 작동했어요. "
+            "사람 머리는 한 번에 7±2개 정보만 처리 가능 — 정보가 부족하면 친한 사람으로 채움."
+        )
+    elif abil > 0.9:
+        st.success(
+            f"📊 **분석 우선** — 역량 점수 **{abil:.0%}**, 친분 편향 **{fb:.0%}**. "
+            "친분보다 객관 정보로 결정하는 분석가 타입이에요."
+        )
+
+    dt = a.get("decision_time_sec", 0)
+    if dt > 0:
+        st.caption(f"⏱️ 결정 시간: {dt:.1f}초")
 
     st.markdown("---")
     st.success("🙇 **응답 감사합니다!** 결과는 6/12 보고서 제출 후 단톡에 익명 요약으로 공유됩니다.")
