@@ -64,11 +64,23 @@ TYPES = {
              "desc": "이득 + 변동성 + 집중 + 직관. 감으로 살지만 묘하게 잘됨."},
 }
 
-# 가상 후보 이름 (한국 학생 흔한 이름)
-FAKE_NAMES = [
-    "김민준", "이서연", "박지호", "최예린", "정우진", "강하늘",
-    "윤서아", "조현우", "임지윤", "한도윤", "오나연", "신유진",
-    "권태민", "배소율", "송민재"
+# 가상 후보 — 이름 + 관계 설명 (다양성: 한국·외국·관계)
+FAKE_CANDIDATES = [
+    {"name": "민준", "rel": "1학년 때부터 친한 동기"},
+    {"name": "James", "rel": "수업 같이 듣는 교환학생"},
+    {"name": "서연", "rel": "친한 친구의 룸메이트"},
+    {"name": "Sarah", "rel": "학회 활동 같이 한 외국인"},
+    {"name": "지호", "rel": "얼굴만 아는 같은 과"},
+    {"name": "Emma", "rel": "동아리 부원, 영어 잘함"},
+    {"name": "현우 선배", "rel": "조교 경험 있는 4학년"},
+    {"name": "예린", "rel": "MT에서 친해진 동기"},
+    {"name": "Michael", "rel": "스터디 그룹에서 만난 친구"},
+    {"name": "도윤", "rel": "랩 인턴 같이 했던"},
+    {"name": "수아", "rel": "이번 학기 처음 본 동기"},
+    {"name": "Olivia", "rel": "기숙사 같은 층 사는"},
+    {"name": "유진", "rel": "프로젝트 같이 했던 신뢰감"},
+    {"name": "태민", "rel": "팀플 한 번 한 적 있음"},
+    {"name": "Daniel", "rel": "공모전 팀에서 본 적 있음"},
 ]
 
 
@@ -280,12 +292,13 @@ def page_team():
 
     rng = random.Random(42)
     skills = ["AI", "통계", "디자인", "발표", "코딩", "리서치", "관리"]
-    name_pool = FAKE_NAMES.copy()
-    rng.shuffle(name_pool)
+    pool = FAKE_CANDIDATES.copy()
+    rng.shuffle(pool)
     cands = []
     for i in range(n):
         cands.append({
-            "이름": name_pool[i],
+            "이름": pool[i]["name"],
+            "관계": pool[i]["rel"],
             "역량": rng.randint(5, 10),
             "관심분야": rng.choice(skills),
             "가용시간": rng.randint(1, 5),
@@ -293,11 +306,12 @@ def page_team():
         })
 
     if info:
-        st.success("📋 학과에서 **프로필 카드**를 제공했습니다")
+        st.success("📋 학과에서 **프로필 카드**를 제공했습니다 (이름·관계·역량·관심·시간·경험)")
         st.dataframe(pd.DataFrame(cands), use_container_width=True, hide_index=True)
     else:
-        st.warning("❗ **이름만** 알 수 있습니다")
-        st.markdown("&nbsp;&nbsp;".join([f"🧑 {c['이름']}" for c in cands]))
+        st.warning("❗ **이름과 관계만** 알 수 있습니다")
+        for c in cands:
+            st.markdown(f"🧑 **{c['이름']}** _{c['관계']}_")
 
     st.markdown("---")
     style = st.radio("🎯 어떻게 결정하시겠어요?",
