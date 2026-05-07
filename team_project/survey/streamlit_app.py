@@ -130,26 +130,21 @@ def nav_buttons(show_prev: bool = True, next_label: str = "다음 →", on_next=
                 next_step()
 
 
-def render_type_grid(highlight: str | None = None):
-    """16가지 유형 4x4 카드 그리드"""
-    codes = list(TYPES.keys())
-    html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">'
-    for code in codes:
-        p = TYPES[code]
+def render_type_grid(highlight: str | None = None) -> str:
+    """16가지 유형 4x4 카드 그리드 — 한 줄 HTML로 압축 (Streamlit markdown 호환)"""
+    cards = []
+    for code, p in TYPES.items():
         is_hl = highlight == code
-        border = "border:3px solid #fff;box-shadow:0 0 0 3px " + p["color"] if is_hl else "border:1px solid #e9ecef"
-        scale = "transform:scale(1.05);" if is_hl else ""
-        html += f'''
-        <div style="background:linear-gradient(135deg,{p["color"]}22 0%,{p["color"]}44 100%);
-        {border};{scale}border-radius:10px;padding:10px 6px;text-align:center;
-        transition:all 0.3s">
-            <div style="font-size:1.8em;line-height:1.2">{p["emoji"]}</div>
-            <div style="font-size:0.85em;font-weight:700;color:{p["color"]};margin-top:2px">{code}</div>
-            <div style="font-size:0.7em;color:#495057;line-height:1.2;margin-top:2px">{p["name"]}</div>
-        </div>
-        '''
-    html += '</div>'
-    return html
+        border = f"border:3px solid {p['color']};box-shadow:0 0 12px {p['color']}aa" if is_hl else "border:1px solid #e9ecef"
+        bg = f"linear-gradient(135deg,{p['color']}22 0%,{p['color']}44 100%)"
+        cards.append(
+            f'<div style="background:{bg};{border};border-radius:10px;padding:10px 6px;text-align:center">'
+            f'<div style="font-size:1.8em;line-height:1.2">{p["emoji"]}</div>'
+            f'<div style="font-size:0.85em;font-weight:700;color:{p["color"]};margin-top:2px">{code}</div>'
+            f'<div style="font-size:0.7em;color:#495057;line-height:1.2;margin-top:2px">{p["name"]}</div>'
+            f'</div>'
+        )
+    return '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">' + ''.join(cards) + '</div>'
 
 
 # 진행률
@@ -178,7 +173,8 @@ def page_intro():
     )
 
     st.markdown("### 16가지 학습 유형 — 당신은 어디에?")
-    st.markdown(render_type_grid(), unsafe_allow_html=True)
+    import streamlit.components.v1 as components
+    components.html(render_type_grid(), height=500, scrolling=False)
 
     st.markdown("&nbsp;")
     st.markdown(
@@ -438,7 +434,8 @@ def page_result():
 
     st.markdown("---")
     st.subheader("🧬 16가지 유형 (당신 위치 강조)")
-    st.markdown(render_type_grid(highlight=code), unsafe_allow_html=True)
+    import streamlit.components.v1 as components
+    components.html(render_type_grid(highlight=code), height=500, scrolling=False)
 
     st.markdown("---")
 
