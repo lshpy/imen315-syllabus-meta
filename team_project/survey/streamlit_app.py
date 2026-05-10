@@ -465,10 +465,11 @@ def page_framing():
     st.title("👑 챕터 2 — 팀장 정책")
     st.markdown("**상황**: 1주차 끝. 교수님이 팀장 자원자를 모집합니다.")
 
+    st.caption("(가상 비교 실험 — 같은 ±10점 차이를 두 표현으로 보여주고 반응 차이 측정)")
     if st.session_state.frame == "gain":
-        st.success("📢 **교수님**: \"팀장 자원자에게 **+10점 가산**!\"")
+        st.success("📢 **교수님 [표현 A]**: \"팀장에 자원하면 **+10점 가산**해드립니다!\"")
     else:
-        st.error("📢 **교수님**: \"팀장 안 맡으면 **-10점 차감**됩니다...\"")
+        st.error("📢 **교수님 [표현 B]**: \"기본 점수에서 출발하지만 팀장 책임을 미이행하면 **-10점 차감**됩니다.\"")
 
     intent = st.radio("🤚 자원하시겠습니까?",
                        ["💯 적극 자원", "😊 의향 있음", "🤔 고민", "😐 별로", "🙅 절대 안 함"], index=2)
@@ -534,7 +535,7 @@ def page_team():
                 st.caption(c["rel"])
 
     st.markdown("---")
-    st.markdown("### 🎯 5명을 선택하세요")
+    st.markdown("### 🎯 2명을 지명하세요 (강의계획서 규칙: 팀장 직접 지명 최대 2명)")
 
     options = [f"{c['name']} ({c['rel']})" for c in cands]
     picked = st.multiselect(
