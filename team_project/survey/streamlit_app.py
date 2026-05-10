@@ -465,11 +465,11 @@ def page_framing():
     st.title("👑 챕터 2 — 팀장 정책")
     st.markdown("**상황**: 1주차 끝. 교수님이 팀장 자원자를 모집합니다.")
 
-    st.caption("(가상 비교 실험 — 같은 ±10점 차이를 두 표현으로 보여주고 반응 차이 측정)")
+    st.caption("(강의계획서의 두 표현을 그대로 분리 — gain은 명확, loss는 모호한 비대칭 자체가 발견 포인트)")
     if st.session_state.frame == "gain":
-        st.success("📢 **교수님 [표현 A]**: \"팀장에 자원하면 **+10점 가산**해드립니다!\"")
+        st.success("📢 **강의계획서 [GAIN frame · 명확]**: \"팀장 자원자에게 **+10점 가산**\"")
     else:
-        st.error("📢 **교수님 [표현 B]**: \"기본 점수에서 출발하지만 팀장 책임을 미이행하면 **-10점 차감**됩니다.\"")
+        st.error("📢 **강의계획서 [LOSS frame · 모호]**: \"기여도가 **현저히 낮다고 판단되는 경우 감점**\"")
 
     intent = st.radio("🤚 자원하시겠습니까?",
                        ["💯 적극 자원", "😊 의향 있음", "🤔 고민", "😐 별로", "🙅 절대 안 함"], index=2)
@@ -719,7 +719,7 @@ def page_result():
     a = st.session_state.answers
     if a.get("frame") == "loss" and a.get("leader_intent", 0) >= 5:
         st.info(
-            "💡 **흥미로운 발견** — 당신은 '-10점 차감' 시나리오에서 자원 의도가 높았어요. "
+            "💡 **흥미로운 발견** — 당신은 '모호한 감점' 시나리오에서 자원 의도가 높았어요. "
             "**Prospect Theory(Tversky & Kahneman)**가 예측한 인류 평균 — "
             "사람은 손실을 이득보다 약 2배 강하게 느낍니다."
         )
