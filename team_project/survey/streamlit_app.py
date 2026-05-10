@@ -496,15 +496,18 @@ def page_framing():
 # 챕터 3: 팀 구성 (가상 이름)
 # ─────────────────────────────────────────────────
 def page_team():
-    st.title("👥 챕터 3 — 팀원 5명 직접 선택")
+    st.title("👥 챕터 3 — 팀원 2명 직접 지명")
     n = st.session_state.n_cand
     info = st.session_state.info_provided
 
-    # 페이지 진입 시간 기록 (결정 시간 측정용)
     if "team_start_time" not in st.session_state:
         st.session_state.team_start_time = datetime.now()
 
-    st.markdown(f"**상황**: 후보 **{n}명** 중 **정확히 5명**을 직접 선택하세요.")
+    st.markdown(
+        f"**상황**: 강의계획서대로 **팀장이 직접 지명할 수 있는 인원은 2명**. "
+        f"나머지 2명은 자동 배정됩니다.\n\n"
+        f"후보 **{n}명** 중 **정확히 2명**을 지명하세요."
+    )
 
     # 후보 풀 무작위 추출 (시드 고정으로 같은 응답자 그룹 내 일관성)
     rng = random.Random(42)
@@ -535,39 +538,37 @@ def page_team():
 
     options = [f"{c['name']} ({c['rel']})" for c in cands]
     picked = st.multiselect(
-        "팀원 5명 (정확히 5명까지)",
+        "지명할 팀원 2명 (정확히 2명)",
         options,
-        max_selections=5,
-        placeholder="후보 풀에서 5명 고르기",
+        max_selections=2,
+        placeholder="후보 풀에서 2명 지명",
     )
 
-    if len(picked) != 5:
-        st.info(f"현재 {len(picked)}/5명 선택. 5명 채워주세요.")
+    if len(picked) != 2:
+        st.info(f"현재 {len(picked)}/2명 지명. 정확히 2명 골라주세요.")
 
-    sat = st.select_slider("🎯 본인의 선택에 만족합니까?",
+    sat = st.select_slider("🎯 본인의 지명에 만족합니까?",
                             ["😩 전혀", "😟 별로", "😐 그저", "🙂 만족", "🤩 매우"], value="😐 그저")
-    redo = st.radio("🔁 같은 상황 다시 와도 같은 5명?",
+    redo = st.radio("🔁 같은 상황 다시 와도 같은 2명?",
                     ["✅ 예", "❌ 아니오"], horizontal=True)
 
     def _save():
-        if len(picked) != 5:
-            st.error("정확히 5명을 선택해주세요!")
+        if len(picked) != 2:
+            st.error("정확히 2명을 지명해주세요!")
             return
 
         # 선택된 후보 매핑
         picked_names = [p.split(" (")[0] for p in picked]
         picked_cands = [c for c in cands if c["name"] in picked_names]
 
-        # 측정 지표 계산
-        avg_closeness = sum(c["closeness"] for c in picked_cands) / 5
-        avg_ability = sum(c["ability"] for c in picked_cands) / 5
-        # 정규화된 친분 편향 점수 (0~1) — 가장 친한 5명 골랐을 때가 1.0
-        top5_closeness = sorted([c["closeness"] for c in cands], reverse=True)[:5]
-        max_closeness = sum(top5_closeness) / 5
+        # 측정 지표 계산 (2명 기준)
+        avg_closeness = sum(c["closeness"] for c in picked_cands) / 2
+        avg_ability = sum(c["ability"] for c in picked_cands) / 2
+        top2_closeness = sorted([c["closeness"] for c in cands], reverse=True)[:2]
+        max_closeness = sum(top2_closeness) / 2
         friendship_bias = avg_closeness / max_closeness if max_closeness > 0 else 0
-        # 역량 점수도 정규화
-        top5_ability = sorted([c["ability"] for c in cands], reverse=True)[:5]
-        max_ability = sum(top5_ability) / 5
+        top2_ability = sorted([c["ability"] for c in cands], reverse=True)[:2]
+        max_ability = sum(top2_ability) / 2
         ability_score = avg_ability / max_ability if max_ability > 0 else 0
 
         decision_time_sec = (datetime.now() - st.session_state.team_start_time).total_seconds()
