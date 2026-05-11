@@ -431,7 +431,7 @@ def s_theory_wm_intuition():
          "정보가 많아지면 \"최적\" 대신 \"그럭저럭 괜찮은\" 첫 번째 옵션에서 멈춘다.",
          size=18, color=INK_2)
     text(s, 0.7, 4.25, 12, 0.7,
-         "이걸 만족화 (Satisficing) 라고 한다 — Simon이 노벨상 받은 개념.",
+         "이걸 만족화(Satisficing)라고 한다.",
          size=20, bold=True, color=ACCENT)
 
     text(s, 0.7, 5.15, 12, 0.4, "일상에서 매일 일어나는 일", size=11, bold=True, color=INK)
