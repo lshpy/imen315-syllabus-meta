@@ -1147,29 +1147,41 @@ def s_improvements():
     ]
     for i, (num, name, what, mech, theory, color) in enumerate(items):
         x = 0.7 + i * 4.1
+        y0 = 2.85
+        # 카드 전체 (외곽)
+        card(s, x, y0, 3.9, 4.4, fill=WHITE, border=color, border_width=1.5, shadow=True)
 
-        # 상단 큰 번호 원
-        from pptx.enum.shapes import MSO_SHAPE as M
-        circle = s.shapes.add_shape(M.OVAL, Inches(x + 0.2), Inches(2.95),
-                                     Inches(1.0), Inches(1.0))
-        circle.fill.solid(); circle.fill.fore_color.rgb = color
-        circle.line.fill.background()
-        text(s, x + 0.2, 3.1, 1.0, 0.7, num, size=26, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+        # 상단 컬러 헤더 (카드 안쪽)
+        header_h = 1.05
+        bar = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                  Inches(x), Inches(y0),
+                                  Inches(3.9), Inches(header_h))
+        bar.fill.solid(); bar.fill.fore_color.rgb = color
+        bar.line.fill.background()
+        bar.adjustments[0] = 0.05
+        # 하단 모서리를 가리는 사각형으로 카드 위만 둥글게
+        cover = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
+                                    Inches(x), Inches(y0 + 0.6),
+                                    Inches(3.9), Inches(header_h - 0.6))
+        cover.fill.solid(); cover.fill.fore_color.rgb = color
+        cover.line.fill.background()
 
-        # 메인 카드 (번호 원 아래)
-        card(s, x, 4.2, 3.9, 2.8, fill=PAPER, border=color, border_width=1.2)
+        # 번호 + 이름 (헤더 안)
+        text(s, x + 0.3, y0 + 0.2, 1.0, 0.4, num, size=14, bold=True, color=WHITE)
+        text(s, x + 0.3, y0 + 0.45, 3.4, 0.55, name, size=22, bold=True, color=WHITE)
 
-        # 제목
-        text(s, x + 0.25, 4.4, 3.5, 0.55, name, size=22, bold=True, color=INK)
-        # 부제 (한 줄 설명)
-        text(s, x + 0.25, 5.0, 3.5, 0.4, what, size=12, bold=True, color=color)
+        # 부제
+        text(s, x + 0.3, y0 + 1.25, 3.4, 0.45, what, size=13, bold=True, color=color)
         # 본문
-        text(s, x + 0.25, 5.5, 3.5, 1.0, mech, size=13, color=INK_2, line_spacing=1.5)
-        # 근거 이론 배지
-        chip(s, x + 0.25, 6.55, 3.4, 0.35, "근거: " + theory, color=color, size=10)
+        text(s, x + 0.3, y0 + 1.85, 3.4, 1.4, mech, size=14, color=INK_2, line_spacing=1.55)
 
-    text(s, 0.7, 7.2, 12, 0.3,
-         "T1 설문은 인식 변화, T2 시뮬은 약한 학생 보호 효과를 각각 검증",
+        # 하단 근거 이론
+        line(s, x + 0.3, y0 + 3.6, x + 3.6, y0 + 3.6, color=color)
+        text(s, x + 0.3, y0 + 3.75, 1.0, 0.35, "근거 이론", size=10, bold=True, color=MUTED)
+        text(s, x + 0.3, y0 + 4.0, 3.4, 0.35, theory, size=13, bold=True, color=color)
+
+    text(s, 0.7, 7.4, 12, 0.3,
+         "T1 설문은 인식 변화, T2 시뮬은 약한 학생 보호 효과를 검증",
          size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
 
