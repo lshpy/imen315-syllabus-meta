@@ -97,13 +97,13 @@ def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75, accent=No
 
 
 def page_no(s, n):
-    text(s, 12.3, 7.05, 0.8, 0.3, f"{n:02d}", size=9, color=MUTED, align=PP_ALIGN.RIGHT)
+    text(s, 12.3, 7.05, 0.8, 0.3, f"{n:02d}", size=11, color=MUTED, align=PP_ALIGN.RIGHT)
 
 
 def header(s, kicker, title, n):
-    text(s, 0.7, 0.55, 12, 0.35, kicker, size=11, bold=True, color=ACCENT)
-    text(s, 0.7, 0.95, 12, 0.9, title, size=28, bold=True, color=INK)
-    line(s, 0.7, 1.95, 12.6, 1.95)
+    text(s, 0.7, 0.5, 12, 0.4, kicker, size=12, bold=True, color=ACCENT)
+    text(s, 0.7, 0.9, 12, 1.0, title, size=32, bold=True, color=INK)
+    line(s, 0.7, 2.0, 12.6, 2.0)
     page_no(s, n)
 
 
@@ -124,8 +124,8 @@ def s_cover():
          "수업에서 배운 이론을 바로 그 수업의 강의계획서에 적용해\n학생 행동을 정량 예측하고 실제 학생들에게서 검증한다.",
          size=14, color=MUTED, line_spacing=1.5)
     line(s, 0.7, 6.6, 12.6, 6.6, color=RGBColor(0x35, 0x3B, 0x4D), weight=1)
-    text(s, 0.7, 6.75, 6, 0.4, "팀장 이승현 · 산업경영공학부", size=11, color=MUTED)
-    text(s, 6.7, 6.75, 6, 0.4, "오형석 교수 · 2026 봄학기", size=11, color=MUTED, align=PP_ALIGN.RIGHT)
+    text(s, 0.7, 6.75, 6, 0.4, "팀장 이승현 · 산업경영공학부", size=12, color=MUTED)
+    text(s, 6.7, 6.75, 6, 0.4, "오형석 교수 · 2026 봄학기", size=12, color=MUTED, align=PP_ALIGN.RIGHT)
 
 
 # ============================================
@@ -185,7 +185,7 @@ def s_4_rules():
         card(s, x, y, 5.95, 2.15)
         text(s, x + 0.3, y + 0.25, 0.7, 0.5, num, size=20, bold=True, color=color)
         text(s, x + 0.85, y + 0.25, 5, 0.55, title, size=17, bold=True, color=INK)
-        text(s, x + 0.3, y + 0.95, 5.4, 0.45, detail, size=11, color=MUTED)
+        text(s, x + 0.3, y + 0.95, 5.4, 0.45, detail, size=12, color=MUTED)
         line(s, x + 0.3, y + 1.5, x + 5.65, y + 1.5)
         text(s, x + 0.3, y + 1.6, 5.4, 0.45, behavior, size=13, bold=True, color=color)
 
@@ -213,7 +213,7 @@ def s_predicted_behavior():
         bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.7), Inches(y), Inches(0.12), Inches(1.0))
         bar.fill.solid(); bar.fill.fore_color.rgb = color; bar.line.fill.background()
         text(s, 1.0, y + 0.18, 5.5, 0.4, name, size=16, bold=True, color=INK)
-        text(s, 1.0, y + 0.6, 7.0, 0.35, mech, size=12, color=INK_2)
+        text(s, 1.0, y + 0.6, 7.0, 0.35, mech, size=14, color=INK_2)
         text(s, 8.5, y + 0.32, 4.1, 0.4, pred, size=13, bold=True, color=color)
 
 
@@ -243,7 +243,7 @@ def s_theories():
         y = 2.3 + (i // 2) * 2.4
         card(s, x, y, 5.95, 2.15, accent=color)
         text(s, x + 0.35, y + 0.25, 5.4, 0.5, name, size=18, bold=True, color=INK)
-        text(s, x + 0.35, y + 0.75, 5.4, 0.35, src, size=11, color=MUTED)
+        text(s, x + 0.35, y + 0.75, 5.4, 0.35, src, size=12, color=MUTED)
         fpath = FORMULAS / fimg
         if fpath.exists():
             s.shapes.add_picture(str(fpath), Inches(x + 0.35), Inches(y + 1.1), height=Inches(0.5))
@@ -285,7 +285,7 @@ def s_theory_utility_intuition():
         card(s, x, 5.55, 3.9, 1.55, accent=ACCENT_3)
         text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
         text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT_3)
-        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=13, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -300,7 +300,7 @@ def s_theory_utility():
          size=11, bold=True, color=ACCENT_3)
 
     card(s, 0.7, 2.75, 5.95, 1.4, fill=RGBColor(0xF7, 0xF8, 0xFB), border_width=0)
-    text(s, 0.95, 2.85, 5.5, 0.35, "핵심 공식", size=10, bold=True, color=MUTED)
+    text(s, 0.95, 2.85, 5.5, 0.35, "핵심 공식", size=11, bold=True, color=MUTED)
     fp = FORMULAS / "f_utility.png"
     if fp.exists():
         s.shapes.add_picture(str(fp), Inches(0.95), Inches(3.3), height=Inches(0.7))
@@ -314,15 +314,15 @@ def s_theory_utility():
     for i, (sym, meaning) in enumerate(vars_):
         y = 4.7 + i * 0.45
         text(s, 0.95, y, 1, 0.35, sym, size=12, bold=True, color=ACCENT_3)
-        text(s, 1.85, y, 4.5, 0.35, meaning, size=11, color=INK_2)
+        text(s, 1.85, y, 4.5, 0.35, meaning, size=13, color=INK_2)
 
     text(s, 0.7, 6.2, 5.7, 0.35, "비유", size=11, bold=True, color=INK)
     text(s, 0.95, 6.55, 5.5, 0.45,
          "슬롯머신 — 보상이 \"가끔\" 무작위로 주어질 때\n행동이 가장 강하게 굳어짐",
-         size=11, color=INK_2, line_spacing=1.3)
+         size=13, color=INK_2, line_spacing=1.3)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEC, 0xFD, 0xF5), border=ACCENT_3)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT_3)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=15, bold=True, color=ACCENT_3)
     text(s, 7.1, 3.45, 5.3, 0.6,
          "\"임의로 출석 체크\"",
          size=18, bold=True, color=INK)
@@ -366,7 +366,7 @@ def s_theory_forget_intuition():
         card(s, x, 5.55, 3.9, 1.55, accent=ACCENT_4)
         text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
         text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT_4)
-        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=13, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -380,7 +380,7 @@ def s_theory_forget():
          size=11, bold=True, color=ACCENT_4)
 
     card(s, 0.7, 2.75, 5.95, 1.4, fill=RGBColor(0xF7, 0xF8, 0xFB), border_width=0)
-    text(s, 0.95, 2.85, 5.5, 0.35, "핵심 공식", size=10, bold=True, color=MUTED)
+    text(s, 0.95, 2.85, 5.5, 0.35, "핵심 공식", size=11, bold=True, color=MUTED)
     fp = FORMULAS / "f_memory.png"
     if fp.exists():
         s.shapes.add_picture(str(fp), Inches(0.95), Inches(3.25), height=Inches(0.75))
@@ -395,14 +395,14 @@ def s_theory_forget():
     for i, (sym, meaning) in enumerate(vars_):
         y = 4.7 + i * 0.42
         text(s, 0.95, y, 1.4, 0.35, sym, size=12, bold=True, color=ACCENT_4)
-        text(s, 2.15, y, 4.2, 0.35, meaning, size=11, color=INK_2)
+        text(s, 2.15, y, 4.2, 0.35, meaning, size=13, color=INK_2)
 
     text(s, 0.7, 6.55, 5.7, 0.35,
          "핵심: 자주·분산해서 학습할수록 B가 커지고 T가 짧아짐",
-         size=10, color=MUTED)
+         size=11, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFE, 0xF3, 0xC7), border=ACCENT_4)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT_4)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=15, bold=True, color=ACCENT_4)
     text(s, 7.1, 3.45, 5.3, 0.6,
          "\"기말고사 1회 40%\"",
          size=18, bold=True, color=INK)
@@ -446,7 +446,7 @@ def s_theory_wm_intuition():
         card(s, x, 5.55, 3.9, 1.55, accent=ACCENT)
         text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
         text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT)
-        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=13, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -461,7 +461,7 @@ def s_theory_wm():
          size=11, bold=True, color=ACCENT)
 
     card(s, 0.7, 2.75, 5.95, 1.7, fill=PAPER)
-    text(s, 0.95, 2.9, 5.5, 0.35, "두 가지 원리", size=10, bold=True, color=MUTED)
+    text(s, 0.95, 2.9, 5.5, 0.35, "두 가지 원리", size=11, bold=True, color=MUTED)
     fp = FORMULAS / "f_wm.png"
     if fp.exists():
         s.shapes.add_picture(str(fp), Inches(0.95), Inches(3.3), height=Inches(0.5))
@@ -474,15 +474,15 @@ def s_theory_wm():
          size=11, bold=True, color=INK)
     text(s, 0.95, 5.0, 5.5, 1.0,
          "최적(optimal) 선택을 포기하고\n\"그럭저럭 괜찮은(good enough)\" 첫 번째 옵션에서 멈춤",
-         size=11, color=INK_2, line_spacing=1.3)
+         size=13, color=INK_2, line_spacing=1.3)
 
     text(s, 0.7, 6.4, 5.7, 0.35, "비유 — 카페 메뉴", size=11, bold=True, color=INK)
     text(s, 0.95, 6.75, 5.5, 0.4,
          "메뉴 3개: 다 비교 가능 / 메뉴 30개: \"그냥 라떼\"",
-         size=11, color=MUTED)
+         size=12, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=15, bold=True, color=ACCENT)
     text(s, 7.1, 3.45, 5.3, 0.6,
          "\"팀장이 2명 직접 지명\"",
          size=18, bold=True, color=INK)
@@ -526,7 +526,7 @@ def s_theory_framing_intuition():
         card(s, x, 5.55, 3.9, 1.55, accent=ACCENT_2)
         text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
         text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT_2)
-        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=13, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -541,7 +541,7 @@ def s_theory_framing():
          size=11, bold=True, color=ACCENT_2)
 
     card(s, 0.7, 2.75, 5.95, 1.7, fill=PAPER)
-    text(s, 0.95, 2.95, 5.5, 0.4, "핵심 원리", size=10, bold=True, color=MUTED)
+    text(s, 0.95, 2.95, 5.5, 0.4, "핵심 원리", size=11, bold=True, color=MUTED)
     text(s, 0.95, 3.35, 5.5, 0.5,
          "동일한 결과도 \"이득\"으로 표현 vs \"손실\"로 표현",
          size=13, bold=True, color=INK)
@@ -555,15 +555,15 @@ def s_theory_framing():
         s.shapes.add_picture(str(fp), Inches(0.95), Inches(5.05), height=Inches(0.55))
     text(s, 0.95, 5.7, 5.5, 0.5,
          "= 같은 −10원 손실이 +10원 이득보다 약 2배 강함",
-         size=11, color=INK_2)
+         size=13, color=INK_2)
 
     text(s, 0.7, 6.45, 5.7, 0.35, "고전 실험 — Asian disease problem", size=11, bold=True, color=INK)
     text(s, 0.95, 6.8, 5.5, 0.4,
          "동일 정책 → 표현만 바꿔도 선택률 72% vs 22%",
-         size=10, color=MUTED)
+         size=11, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT_2)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=15, bold=True, color=ACCENT_2)
     text(s, 7.1, 3.45, 5.3, 0.5,
          "\"+10 가산\" vs \"감점\"",
          size=18, bold=True, color=INK)
@@ -606,7 +606,7 @@ def s_hypotheses():
         chip(s, 0.9, y + 0.3, 0.85, 0.45, code, color=color, size=11)
         text(s, 2.0, y + 0.18, 4.0, 0.35, theory, size=11, bold=True, color=color)
         text(s, 2.0, y + 0.48, 10.5, 0.4, body, size=12, bold=True, color=INK)
-        text(s, 2.0, y + 0.78, 10.5, 0.35, "기대 결과 — " + expected, size=10, color=INK_2)
+        text(s, 2.0, y + 0.78, 10.5, 0.35, "기대 결과 — " + expected, size=12, color=INK_2)
 
 
 # ============================================
@@ -641,7 +641,7 @@ def s_t1_overview():
         y = 4.3 + i * 0.42
         text(s, 0.95, y, 0.4, 0.35, num, size=14, bold=True, color=ACCENT)
         text(s, 1.45, y, 2.2, 0.35, name, size=12, bold=True, color=INK)
-        text(s, 3.7, y, 8.9, 0.35, desc, size=11, color=INK_2)
+        text(s, 3.7, y, 8.9, 0.35, desc, size=13, color=INK_2)
 
     text(s, 0.7, 7.0, 12, 0.4,
          "가장 중요한 것: 한 명의 응답이 H1·H2·H3·H4 4가지 가설을 동시에 검증하는 데이터가 됨",
@@ -666,7 +666,7 @@ def s_t1_dataflow():
         x = 0.7 + i * 3.18
         card(s, x, 2.5, 2.95, 2.1, fill=PAPER, border=color)
         text(s, x + 0.2, 2.65, 2.6, 0.5, title, size=15, bold=True, color=color)
-        text(s, x + 0.2, 3.2, 2.6, 1.3, desc, size=11, color=INK_2, line_spacing=1.4)
+        text(s, x + 0.2, 3.2, 2.6, 1.3, desc, size=13, color=INK_2, line_spacing=1.4)
         if i < 3:
             arrow = s.shapes.add_shape(MSO_SHAPE.RIGHT_ARROW,
                                         Inches(x + 2.95), Inches(3.4),
@@ -691,11 +691,11 @@ def s_t1_dataflow():
         x = 0.7 + i * 4.1
         text(s, x, 5.65, 0.5, 0.4, emoji, size=20)
         text(s, x + 0.6, 5.65, 3.4, 0.4, name, size=13, bold=True, color=INK)
-        text(s, x + 0.6, 6.05, 3.4, 0.7, desc, size=11, color=INK_2, line_spacing=1.3)
+        text(s, x + 0.6, 6.05, 3.4, 0.7, desc, size=13, color=INK_2, line_spacing=1.3)
 
     text(s, 0.7, 7.0, 12, 0.4,
          "끝나면 N=60 응답으로 4 가설 검정 + 시뮬 예측 정합성 확인 + 도구 A/B 응답률 비교",
-         size=11, color=MUTED, align=PP_ALIGN.CENTER)
+         size=12, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -719,14 +719,14 @@ def s_t1_attend():
         chip(s, 0.7, y + 0.3, 0.6, 0.45, code, color=color)
         text(s, 1.5, y + 0.18, 6.7, 0.4, title, size=14, bold=True, color=INK)
         text(s, 1.5, y + 0.6, 6.7, 0.35, "→ 응답: \"이 정책에서 비 오는 날 결석할 의도\" (1~7)",
-             size=10, color=INK_2)
+             size=12, color=INK_2)
         text(s, 8.5, y + 0.32, 4.2, 0.4, pred, size=11, bold=True, color=color, align=PP_ALIGN.RIGHT)
         if i < 2:
             line(s, 0.7, y + 1.1, 12.6, y + 1.1)
 
     text(s, 0.7, 6.95, 12, 0.4,
          "측정: 결석 의도 1~7 점수 + 비 오는 날 갈 가능성 0~100% · 가설 H3 검정",
-         size=11, color=MUTED, align=PP_ALIGN.CENTER)
+         size=12, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -744,26 +744,26 @@ def s_t1_framing():
     bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.7), Inches(3.0), Inches(0.1), Inches(3.5))
     bar.fill.solid(); bar.fill.fore_color.rgb = ACCENT_3; bar.line.fill.background()
     card(s, 0.85, 3.0, 5.8, 3.5, fill=RGBColor(0xEC, 0xFD, 0xF5), border=ACCENT_3)
-    text(s, 1.05, 3.2, 5, 0.4, "조건 A · GAIN frame (명확)", size=13, bold=True, color=ACCENT_3)
+    text(s, 1.05, 3.2, 5, 0.4, "조건 A · GAIN frame (명확)", size=15, bold=True, color=ACCENT_3)
     text(s, 1.05, 3.65, 5.5, 0.85,
          "\"팀장 자원자에게\n+10점 가산\"",
          size=18, bold=True, color=INK, line_spacing=1.25)
     text(s, 1.05, 4.95, 5.5, 0.4, "표현 특성", size=11, bold=True, color=MUTED)
-    text(s, 1.05, 5.3, 5.5, 0.4, "+10이라는 명확한 수치", size=12, color=INK_2)
-    text(s, 1.05, 5.7, 5.5, 0.4, "능동 보상 · 긍정 톤", size=12, color=INK_2)
+    text(s, 1.05, 5.3, 5.5, 0.4, "+10이라는 명확한 수치", size=14, color=INK_2)
+    text(s, 1.05, 5.7, 5.5, 0.4, "능동 보상 · 긍정 톤", size=14, color=INK_2)
     text(s, 1.05, 6.15, 5.5, 0.5, "예상: 자원 의도 약함", size=12, bold=True, color=ACCENT_3)
 
     # 우: LOSS frame (모호)
     bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.85), Inches(3.0), Inches(0.1), Inches(3.5))
     bar.fill.solid(); bar.fill.fore_color.rgb = ACCENT_2; bar.line.fill.background()
     card(s, 7.0, 3.0, 5.6, 3.5, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
-    text(s, 7.2, 3.2, 5, 0.4, "조건 B · LOSS frame (모호)", size=13, bold=True, color=ACCENT_2)
+    text(s, 7.2, 3.2, 5, 0.4, "조건 B · LOSS frame (모호)", size=15, bold=True, color=ACCENT_2)
     text(s, 7.2, 3.65, 5.3, 0.85,
          "\"기여도 저조 시 감점\n(현저히 낮다고 판단 시)\"",
          size=16, bold=True, color=INK, line_spacing=1.25)
     text(s, 7.2, 4.95, 5.3, 0.4, "표현 특성", size=11, bold=True, color=MUTED)
-    text(s, 7.2, 5.3, 5.3, 0.4, "감점 폭 미명시 → 모호", size=12, color=INK_2)
-    text(s, 7.2, 5.7, 5.3, 0.4, "위협 · 회피 · 손실 톤", size=12, color=INK_2)
+    text(s, 7.2, 5.3, 5.3, 0.4, "감점 폭 미명시 → 모호", size=14, color=INK_2)
+    text(s, 7.2, 5.7, 5.3, 0.4, "위협 · 회피 · 손실 톤", size=14, color=INK_2)
     text(s, 7.2, 6.15, 5.3, 0.5, "예상: 회피 의도 강함 (≈2×)", size=12, bold=True, color=ACCENT_2)
 
     text(s, 0.7, 6.85, 12, 0.4,
@@ -791,7 +791,7 @@ def s_t1_team():
     for label, desc, status, color, x in groups:
         card(s, x, 3.0, 3.83, 1.7)
         text(s, x + 0.2, 3.15, 3.5, 0.5, label, size=22, bold=True, color=color)
-        text(s, x + 0.2, 3.7, 3.5, 0.4, desc, size=11, color=INK_2)
+        text(s, x + 0.2, 3.7, 3.5, 0.4, desc, size=13, color=INK_2)
         text(s, x + 0.2, 4.15, 3.5, 0.4, status, size=10, bold=True, color=color)
 
     # 측정 지표
@@ -807,7 +807,7 @@ def s_t1_team():
         y = 5.5 + (i // 2) * 0.55
         x = 0.95 + (i % 2) * 6.15
         text(s, x, y, 6, 0.35, "▸ " + m, size=11, bold=True, color=INK)
-        text(s, x, y + 0.27, 6, 0.3, d, size=10, color=MUTED)
+        text(s, x, y + 0.27, 6, 0.3, d, size=11, color=MUTED)
 
     text(s, 0.7, 6.95, 12, 0.4,
          "후보 풀 설계: 친분 ★★★★★(역량 중) ↔ 친분 ★(역량 최고) — 트레이드오프 강제",
@@ -830,9 +830,9 @@ def s_t1_eval():
     bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.7), Inches(2.95), Inches(0.1), Inches(3.6))
     bar.fill.solid(); bar.fill.fore_color.rgb = ACCENT_4; bar.line.fill.background()
     text(s, 0.95, 3.1, 5, 0.5, "체제 A · 단일 기말 (40%)", size=14, bold=True, color=ACCENT_4)
-    text(s, 0.95, 3.6, 5.5, 0.4, "응답: 8주차 · 15주차 학습/주 (시간)", size=11, color=MUTED)
+    text(s, 0.95, 3.6, 5.5, 0.4, "응답: 8주차 · 15주차 학습/주 (시간)", size=12, color=MUTED)
     text(s, 0.95, 4.1, 5.5, 0.4, "예상 분포", size=11, bold=True, color=INK)
-    text(s, 0.95, 4.5, 5.5, 0.4, "8주차: 적음 · 15주차: 폭증", size=12, color=INK_2)
+    text(s, 0.95, 4.5, 5.5, 0.4, "8주차: 적음 · 15주차: 폭증", size=14, color=INK_2)
     line(s, 0.95, 5.0, 6.4, 5.0)
     text(s, 0.95, 5.1, 5.5, 0.4, "이론 예측", size=11, bold=True, color=ACCENT_4)
     text(s, 0.95, 5.45, 5.5, 0.7, "B 활성화 ≈ −2.0\n인출 시간 7.4초", size=14, bold=True, color=INK)
@@ -841,16 +841,16 @@ def s_t1_eval():
     bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.85), Inches(2.95), Inches(0.1), Inches(3.6))
     bar.fill.solid(); bar.fill.fore_color.rgb = ACCENT_3; bar.line.fill.background()
     text(s, 7.1, 3.1, 5, 0.5, "체제 B · 격주 퀴즈 6회 + 기말", size=14, bold=True, color=ACCENT_3)
-    text(s, 7.1, 3.6, 5, 0.4, "응답: 8주차 · 15주차 학습/주 (시간)", size=11, color=MUTED)
+    text(s, 7.1, 3.6, 5, 0.4, "응답: 8주차 · 15주차 학습/주 (시간)", size=12, color=MUTED)
     text(s, 7.1, 4.1, 5, 0.4, "예상 분포", size=11, bold=True, color=INK)
-    text(s, 7.1, 4.5, 5, 0.4, "8주차 ≈ 15주차 (분산 학습)", size=12, color=INK_2)
+    text(s, 7.1, 4.5, 5, 0.4, "8주차 ≈ 15주차 (분산 학습)", size=14, color=INK_2)
     line(s, 7.1, 5.0, 12.5, 5.0)
     text(s, 7.1, 5.1, 5, 0.4, "이론 예측", size=11, bold=True, color=ACCENT_3)
     text(s, 7.1, 5.45, 5, 0.7, "B 활성화 ≈ −0.8\n인출 시간 2.2초 (3.4× 빠름)", size=14, bold=True, color=INK)
 
     text(s, 0.7, 6.85, 12, 0.4,
          "측정: 학습시간 분포 분산 비교 (F-test) · 이론 예측치 vs 학생 자기보고 정합성",
-         size=11, color=MUTED, align=PP_ALIGN.CENTER)
+         size=12, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -880,12 +880,12 @@ def s_t1_distribution():
         card(s, x, 2.95, 3.9, 4.0)
         chip(s, x + 0.2, 3.1, 0.5, 0.4, code, color=color)
         text(s, x + 0.95, 3.1, 3, 0.4, title, size=14, bold=True, color=INK)
-        text(s, x + 0.2, 3.7, 3.6, 0.4, desc, size=11, color=INK_2)
+        text(s, x + 0.2, 3.7, 3.6, 0.4, desc, size=13, color=INK_2)
         line(s, x + 0.2, 4.2, x + 3.7, 4.2)
-        text(s, x + 0.2, 4.3, 3.6, 0.4, "특징", size=10, bold=True, color=MUTED)
-        text(s, x + 0.2, 4.65, 3.6, 0.9, principle, size=11, color=INK_2)
+        text(s, x + 0.2, 4.3, 3.6, 0.4, "특징", size=11, bold=True, color=MUTED)
+        text(s, x + 0.2, 4.65, 3.6, 0.9, principle, size=13, color=INK_2)
         line(s, x + 0.2, 5.7, x + 3.7, 5.7)
-        text(s, x + 0.2, 5.8, 3.6, 0.4, "결과 가설", size=10, bold=True, color=MUTED)
+        text(s, x + 0.2, 5.8, 3.6, 0.4, "결과 가설", size=11, bold=True, color=MUTED)
         text(s, x + 0.2, 6.15, 3.6, 0.4, expect, size=12, bold=True, color=color)
 
 
@@ -913,14 +913,14 @@ def s_t2():
     text(s, 0.95, 4.8, 5.5, 0.5, "학생 1명 평균만", size=18, bold=True, color=INK)
     text(s, 0.95, 5.4, 5.5, 1.3,
          "모든 학생이 똑같이 학습률 0.15,\n작업 기억 7개라고 가정.\n→ \"평균적 학생\"만 본 결과.",
-         size=11, color=INK_2, line_spacing=1.4)
+         size=13, color=INK_2, line_spacing=1.4)
 
     card(s, 6.85, 4.2, 5.75, 2.6, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
     text(s, 7.1, 4.35, 5.3, 0.4, "팀과제 (확장)", size=12, bold=True, color=ACCENT)
     text(s, 7.1, 4.8, 5.3, 0.5, "가상 학생 1000명, 사람마다 다르게", size=15, bold=True, color=INK)
     text(s, 7.1, 5.4, 5.3, 1.3,
          "학습률·기억력·작업 기억이 모두 다른\n1000명을 가상으로 만들어 시뮬.\n→ 평균뿐 아니라 하위 25%도 본다.",
-         size=11, color=INK_2, line_spacing=1.4)
+         size=13, color=INK_2, line_spacing=1.4)
 
     text(s, 0.7, 7.0, 12, 0.4,
          "분석 질문: 개선안이 약한 학생도 도와주는가",
@@ -940,7 +940,7 @@ def s_t3():
          size=15, bold=True, color=INK)
     text(s, 0.7, 2.8, 12, 0.45,
          "가상 학생 30명에 친한 정도를 다 설정 → 팀장이 5가지 방식으로 뽑게 함 → 그림으로 비교.",
-         size=12, color=INK_2)
+         size=14, color=INK_2)
 
     line(s, 0.7, 3.6, 12.6, 3.6)
     text(s, 0.7, 3.75, 12, 0.4, "5가지 팀장 선택 방식 (그림 5장 산출)", size=11, bold=True, color=ACCENT)
@@ -956,7 +956,7 @@ def s_t3():
         y = 4.25 + i * 0.52
         text(s, 0.95, y + 0.05, 0.4, 0.35, code, size=14, bold=True, color=color)
         text(s, 1.5, y, 3.5, 0.4, name, size=12, bold=True, color=INK)
-        text(s, 5.2, y, 4.0, 0.4, alg, size=10, color=INK_2)
+        text(s, 5.2, y, 4.0, 0.4, alg, size=12, color=INK_2)
         text(s, 9.4, y, 3.3, 0.4, expect, size=10, bold=True, color=color)
 
     text(s, 0.7, 7.0, 12, 0.4,
@@ -977,7 +977,7 @@ def s_streamlit_demo_1():
     text(s, 0.7, 6.6, 6.1, 0.35, "인트로 화면",
          size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
     text(s, 0.7, 6.95, 6.1, 0.3, "16 유형 미리 보여주고 닉네임 입력 후 시작",
-         size=10, color=MUTED, align=PP_ALIGN.CENTER)
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
     path2 = SHOTS / "02_attendance.png"
     if path2.exists():
@@ -985,7 +985,7 @@ def s_streamlit_demo_1():
     text(s, 6.95, 6.6, 5.95, 0.35, "출석 정책 비교 화면",
          size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
     text(s, 6.95, 6.95, 5.95, 0.3, "3개 정책에서 각각 결석 의도를 골라요",
-         size=10, color=MUTED, align=PP_ALIGN.CENTER)
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 def s_streamlit_demo_2():
@@ -998,7 +998,7 @@ def s_streamlit_demo_2():
     text(s, 0.7, 6.6, 6.1, 0.35, "팀장 인센티브 화면",
          size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
     text(s, 0.7, 6.95, 6.1, 0.3, "응답자 절반은 +10 가산, 절반은 모호한 감점 표현",
-         size=10, color=MUTED, align=PP_ALIGN.CENTER)
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
     path2 = SHOTS / "04_team.png"
     if path2.exists():
@@ -1006,7 +1006,7 @@ def s_streamlit_demo_2():
     text(s, 6.95, 6.6, 5.95, 0.35, "팀원 직접 지명 화면",
          size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
     text(s, 6.95, 6.95, 5.95, 0.3, "후보 N명 중 2명 지명 (강의계획서 규칙)",
-         size=10, color=MUTED, align=PP_ALIGN.CENTER)
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # 호환: 기존 함수명 유지
@@ -1029,7 +1029,7 @@ def s_t2_student_example():
     # 좌: 학생 #1 예시 카드
     card(s, 0.7, 2.85, 6.0, 4.3, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
     text(s, 0.95, 3.0, 5.5, 0.4, "예시 학생 #1 · '김민준'", size=14, bold=True, color=ACCENT)
-    text(s, 0.95, 3.4, 5.5, 0.35, "코드가 1000명을 만들 때 첫 번째 학생", size=10, color=MUTED)
+    text(s, 0.95, 3.4, 5.5, 0.35, "코드가 1000명을 만들 때 첫 번째 학생", size=11, color=MUTED)
 
     line(s, 0.95, 3.85, 6.5, 3.85, color=ACCENT)
 
@@ -1043,7 +1043,7 @@ def s_t2_student_example():
         y = 4.0 + i * 0.75
         text(s, 0.95, y, 2.5, 0.35, name, size=11, bold=True, color=INK)
         text(s, 3.4, y, 1.5, 0.4, value, size=18, bold=True, color=ACCENT)
-        text(s, 0.95, y + 0.4, 5.5, 0.3, desc, size=9, color=INK_2)
+        text(s, 0.95, y + 0.4, 5.5, 0.3, desc, size=11, color=INK_2)
 
     # 우: 코드 + 해석
     text(s, 7.0, 2.85, 6, 0.4, "어떻게 무작위 추출하는가 (실제 코드)",
@@ -1055,7 +1055,7 @@ def s_t2_student_example():
          "d     = rng.normal(0.50, 0.10)\n"
          "WM    = rng.choice([5,6,7,8,9])\n"
          "motiv = rng.normal(0.50, 0.20)",
-         size=11, color=INK_2, line_spacing=1.4)
+         size=13, color=INK_2, line_spacing=1.4)
 
     line(s, 7.0, 4.95, 12.6, 4.95)
 
@@ -1065,11 +1065,11 @@ def s_t2_student_example():
          "김민준 같은 학생은 잘 적응한다.\n"
          "반면 α=0.08, WM=5인 학생은 같은 강의계획서에서 훨씬 큰 어려움을 겪는다.\n"
          "1000명 중 가장 약한 25%가 보호되는지를 본다.",
-         size=11, color=INK_2, line_spacing=1.4)
+         size=13, color=INK_2, line_spacing=1.4)
 
     text(s, 0.7, 7.25, 12, 0.3,
          "이 설정값은 문헌 표준값 · T1 설문으로 본 강 학생 실제 값을 수집해 보정 예정",
-         size=9, color=MUTED, align=PP_ALIGN.CENTER)
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -1081,7 +1081,7 @@ def s_t2_examples():
 
     text(s, 0.7, 2.2, 12, 0.4,
          "같은 강의계획서를 받아도 학생마다 결과가 다르다. 평균보다 \"가장 약한 학생\"에서 차이가 크다.",
-         size=12, color=INK_2)
+         size=14, color=INK_2)
 
     # 차트는 약간 작게
     chart_path = CHARTS / "chart_distribution.png"
@@ -1101,7 +1101,7 @@ def s_t2_examples():
     text(s, 8.35, 3.9, 4, 1.0,
          "기존 강의계획서: 12.5초만에 답 떠올림\n"
          "분산 평가 도입: 10.2초 (조금 빨라짐)",
-         size=10, color=INK_2, line_spacing=1.4)
+         size=12, color=INK_2, line_spacing=1.4)
 
     # 홍길동 박스
     card(s, 8.15, 5.1, 4.3, 1.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
@@ -1109,7 +1109,7 @@ def s_t2_examples():
     text(s, 8.35, 5.55, 4, 1.0,
          "기존 강의계획서: 22.3초 (1.8배 손해)\n"
          "분산 평가 도입: 13.5초 (대폭 개선)",
-         size=10, color=INK_2, line_spacing=1.4)
+         size=12, color=INK_2, line_spacing=1.4)
 
     text(s, 8.15, 6.75, 4.4, 0.35,
          "→ 같은 개선안인데 효과는 약한 학생에게 더 큼",
@@ -1174,12 +1174,12 @@ def s_improvements():
 
         # 하단 근거 이론
         line(s, x + 0.3, y0 + 3.6, x + 3.6, y0 + 3.6, color=color)
-        text(s, x + 0.3, y0 + 3.75, 1.0, 0.35, "근거 이론", size=10, bold=True, color=MUTED)
+        text(s, x + 0.3, y0 + 3.75, 1.0, 0.35, "근거 이론", size=11, bold=True, color=MUTED)
         text(s, x + 0.3, y0 + 4.0, 3.4, 0.35, theory, size=13, bold=True, color=color)
 
     text(s, 0.7, 7.4, 12, 0.3,
          "T1 설문은 인식 변화, T2 시뮬은 약한 학생 보호 효과를 검증",
-         size=11, color=MUTED, align=PP_ALIGN.CENTER)
+         size=12, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -1197,10 +1197,10 @@ def s_t3_examples():
     text(s, 0.7, 6.3, 12, 0.4, "한눈에 보이는 차이", size=12, bold=True, color=ACCENT)
     text(s, 0.7, 6.7, 12, 0.4,
          "왼쪽 (친분 우선): 팀장 주변 노드만 분홍색. 친한 사람만 뽑힘.",
-         size=10, color=INK_2)
+         size=12, color=INK_2)
     text(s, 0.7, 7.05, 12, 0.4,
          "오른쪽 (프로필 카드): 그래프 전체에 골고루 분포. 다양한 역량 확보.",
-         size=10, color=INK_2)
+         size=12, color=INK_2)
 
 
 # ============================================
@@ -1247,7 +1247,7 @@ def s_assets():
         card(s, x, y, 3.9, 2.0)
         text(s, x + 0.3, y + 0.3, 3.5, 0.45, title, size=15, bold=True, color=INK)
         chip(s, x + 0.3, y + 0.85, 1.5, 0.4, badge, color=ACCENT)
-        text(s, x + 0.3, y + 1.4, 3.5, 0.55, desc, size=11, color=INK_2, line_spacing=1.3)
+        text(s, x + 0.3, y + 1.4, 3.5, 0.55, desc, size=13, color=INK_2, line_spacing=1.3)
 
     text(s, 0.7, 6.95, 12, 0.4,
          "→ 다른 팀이 처음부터 만들 시간을 우리는 검증·분석에 쓴다.",
@@ -1272,7 +1272,7 @@ def s_deliverables():
         y = 2.3 + (i // 2) * 2.4
         card(s, x, y, 5.95, 2.15)
         text(s, x + 0.3, y + 0.25, 5.5, 0.5, title, size=15, bold=True, color=ACCENT)
-        text(s, x + 0.3, y + 0.85, 5.5, 1.3, content, size=11, color=INK_2, line_spacing=1.4)
+        text(s, x + 0.3, y + 0.85, 5.5, 1.3, content, size=13, color=INK_2, line_spacing=1.4)
 
 
 # ============================================
@@ -1298,7 +1298,7 @@ def s_schedule():
         if i < len(weeks) - 1:
             line(s, 1.1, y + 0.4, 1.1, y + 0.85, color=DIVIDER, weight=1.5)
         text(s, 1.5, y + 0.1, 3.5, 0.4, week, size=12, bold=True, color=INK)
-        text(s, 5.2, y + 0.1, 6.5, 0.4, task, size=12, color=INK_2)
+        text(s, 5.2, y + 0.1, 6.5, 0.4, task, size=14, color=INK_2)
         chip(s, 11.4, y + 0.15, 1.4, 0.35, status, color=color)
 
 
@@ -1325,7 +1325,7 @@ def s_roles():
             text(s, 4.7, y + 0.15, 1.6, 0.45, person, size=18, bold=True, color=color)
         else:
             text(s, 4.7, y + 0.18, 1.6, 0.45, person, size=18, bold=True, color=MUTED)
-        text(s, 6.6, y + 0.2, 6.0, 0.4, desc, size=11, color=INK_2)
+        text(s, 6.6, y + 0.2, 6.0, 0.4, desc, size=13, color=INK_2)
 
 
 # ============================================
@@ -1344,7 +1344,7 @@ def s_today():
         y = 2.4 + i * 1.05
         text(s, 0.95, y + 0.05, 1, 0.7, num, size=36, bold=True, color=ACCENT)
         text(s, 2.0, y, 10, 0.5, title, size=18, bold=True, color=INK)
-        text(s, 2.0, y + 0.5, 10, 0.45, desc, size=12, color=INK_2)
+        text(s, 2.0, y + 0.5, 10, 0.45, desc, size=14, color=INK_2)
         if i < len(items) - 1:
             line(s, 0.7, y + 0.95, 12.6, y + 0.95)
     card(s, 0.7, 6.6, 11.9, 0.6, fill=PAPER)
