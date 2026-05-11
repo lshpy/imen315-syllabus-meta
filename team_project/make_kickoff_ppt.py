@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 CHARTS = ROOT / "charts"
 FORMULAS = ROOT / "formulas"
+SHOTS = ROOT / "screenshots"
 
 prs = Presentation()
 prs.slide_width = Inches(13.33)
@@ -961,7 +962,92 @@ def s_t3():
 
 
 # ============================================
-# 14. 시뮬 결과 시각화 (3장 미니 차트)
+# NEW: Streamlit 데모 (4컷 화면)
+# ============================================
+def s_streamlit_demo():
+    s = slide()
+    header(s, "T1 · LIVE DEMO", "응답자가 실제로 보는 화면 — Streamlit 학습 MBTI 앱", 21)
+
+    text(s, 0.7, 2.3, 12, 0.4,
+         "단톡에 링크 풀면 학생들이 이런 화면을 5분 동안 봅니다.",
+         size=12, color=MUTED)
+
+    shots = [
+        ("01_intro.png", "① 인트로 — 16 유형 미리보기 + 시작"),
+        ("02_attendance.png", "② 출석 정책 3 조건 평가 (within)"),
+        ("03_framing.png", "③ 인센티브 표현 — 강의계획서 원문"),
+        ("04_team.png", "④ 팀원 2명 직접 지명 (강의계획서 규칙)"),
+    ]
+    for i, (img, caption) in enumerate(shots):
+        x = 0.7 + (i % 2) * 6.15
+        y = 2.85 + (i // 2) * 2.15
+        path = SHOTS / img
+        if path.exists():
+            s.shapes.add_picture(str(path), Inches(x), Inches(y),
+                                 width=Inches(5.95), height=Inches(1.8))
+        text(s, x, y + 1.82, 5.95, 0.25, caption,
+             size=10, bold=True, color=INK_2, align=PP_ALIGN.CENTER)
+
+    text(s, 0.7, 7.0, 12, 0.4,
+         "동일 설문을 Google Forms·Sheets에도 동시 배포 → 도구별 응답률 차이로 인터페이스 효과 측정",
+         size=10, color=INK_2, align=PP_ALIGN.CENTER)
+    text(s, 0.7, 7.3, 12, 0.3,
+         "라이브 URL — imen315-syllabus-meta-gpvxmznvcygwd9cln2bnjp.streamlit.app",
+         size=9, color=ACCENT, align=PP_ALIGN.CENTER)
+
+
+# ============================================
+# NEW: T2 시뮬 결과 예시 — 분포 효과
+# ============================================
+def s_t2_examples():
+    s = slide()
+    header(s, "T2 · 시뮬 결과 예시", "왜 평균만 보면 안 되는가 — 분포 효과 차트", 23)
+
+    text(s, 0.7, 2.3, 12, 0.4,
+         "같은 개선안도 평균 학생에게는 별 차이 없지만, 약한 학생에게는 큰 도움이 된다.",
+         size=12, color=MUTED)
+
+    # 메인 차트
+    chart_path = CHARTS / "chart_distribution.png"
+    if chart_path.exists():
+        s.shapes.add_picture(str(chart_path), Inches(0.7), Inches(2.85),
+                             width=Inches(8.0))
+
+    # 우측 해석
+    card(s, 9.0, 2.85, 3.6, 4.0, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
+    text(s, 9.2, 3.0, 3.3, 0.4, "이게 무슨 의미?", size=11, bold=True, color=ACCENT)
+    text(s, 9.2, 3.5, 3.3, 2.5,
+         "기존 강의계획서:\n평균 12.5초 vs 하위 22.3초.\n약한 학생이 1.8배 손해.\n\n분산 평가 도입 시:\n평균 10.2초 vs 하위 13.5초.\n격차 1.3배로 감소.",
+         size=10, color=INK_2, line_spacing=1.4)
+
+    text(s, 0.7, 7.05, 12, 0.4,
+         "→ 보고서 핵심: 우리 개선안은 \"평균\"이 아니라 \"분포의 꼬리\"를 다듬는다",
+         size=12, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
+
+
+# ============================================
+# NEW: T3 친분 그래프 시각화 예시
+# ============================================
+def s_t3_examples():
+    s = slide()
+    header(s, "T3 · 친분 그래프 예시", "5가지 선택 방식이 만들어내는 그림이 진짜 다름", 24)
+
+    chart_path = CHARTS / "chart_network.png"
+    if chart_path.exists():
+        s.shapes.add_picture(str(chart_path), Inches(0.7), Inches(2.4),
+                             width=Inches(12.0))
+
+    text(s, 0.7, 6.3, 12, 0.4, "💡 한눈에 보이는 차이", size=12, bold=True, color=ACCENT)
+    text(s, 0.7, 6.7, 12, 0.4,
+         "왼쪽 (친분 우선) — 팀장 옆 동그라미들만 분홍색. 친한 사람만 뽑힘.",
+         size=10, color=INK_2)
+    text(s, 0.7, 7.05, 12, 0.4,
+         "오른쪽 (프로필 카드) — 그래프 전체에 골고루 분포. 다양한 역량 확보됨.",
+         size=10, color=INK_2)
+
+
+# ============================================
+# 14. 시뮬 결과 시각화 (3장 미니 차트) — KEEP for reference
 # ============================================
 def s_evidence_grid():
     s = slide()
@@ -1128,36 +1214,30 @@ def s_closing():
 
 
 # ─── 슬라이드 추가 ─────────────────────────────
-s_cover()
-s_question()
-s_4_rules()
-s_predicted_behavior()
-s_theories()
-s_theory_utility_intuition()
-s_theory_utility()
-s_theory_forget_intuition()
-s_theory_forget()
-s_theory_wm_intuition()
-s_theory_wm()
-s_theory_framing_intuition()
-s_theory_framing()
-s_hypotheses()
-s_t1_overview()
-s_t1_dataflow()
-s_t1_attend()
-s_t1_framing()
-s_t1_team()
-s_t1_eval()
-s_t1_distribution()
-s_t2()
-s_t3()
-s_evidence_grid()
-s_assets()
-s_deliverables()
-s_schedule()
-s_roles()
-s_today()
-s_closing()
+s_cover()                         # 1
+s_question()                      # 2
+s_4_rules()                       # 3
+s_predicted_behavior()            # 4
+s_theories()                      # 5
+s_theory_utility_intuition()      # 6
+s_theory_utility()                # 7
+s_theory_forget_intuition()       # 8
+s_theory_forget()                 # 9
+s_theory_wm_intuition()           # 10
+s_theory_wm()                     # 11
+s_theory_framing_intuition()      # 12
+s_theory_framing()                # 13
+s_t1_overview()                   # 14
+s_hypotheses()                    # 15
+s_t1_attend()                     # 16
+s_t1_framing()                    # 17
+s_t1_team()                       # 18
+s_t1_eval()                       # 19
+s_streamlit_demo()                # 20 NEW (A/B/C 도구 비교는 이 안에서 언급)
+s_t2()                            # 22
+s_t2_examples()                   # 23 NEW
+s_t3()                            # 24
+s_t3_examples()                   # 25 NEW (or trim if too much)
 
 out = ROOT / "kickoff_2026-05-11.pptx"
 prs.save(out)
