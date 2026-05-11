@@ -333,7 +333,7 @@ def s_theory_utility():
     line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT_3)
     text(s, 7.1, 5.95, 5, 0.4, "시뮬레이션 예측", size=12, bold=True, color=ACCENT_3)
     text(s, 7.1, 6.4, 5.3, 0.4, "고정 일정: 출석률 6.7%", size=14, color=INK_2)
-    text(s, 7.1, 6.85, 5.3, 0.4, "랜덤+비공개: 20% (3배)", size=16, bold=True, color=INK)
+    text(s, 7.1, 6.85, 5.3, 0.4, "랜덤+비공개: 20% (3배)", size=18, bold=True, color=INK)
 
 
 # ============================================
@@ -413,7 +413,7 @@ def s_theory_forget():
     line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT_4)
     text(s, 7.1, 5.95, 5, 0.4, "시뮬레이션 — 시험장 인출 시간", size=12, bold=True, color=ACCENT_4)
     text(s, 7.1, 6.4, 5.3, 0.4, "단일 기말: 7.4초", size=14, color=INK_2)
-    text(s, 7.1, 6.85, 5.3, 0.4, "격주 퀴즈: 2.2초 (3.4배 빠름)", size=16, bold=True, color=INK)
+    text(s, 7.1, 6.85, 5.3, 0.4, "격주 퀴즈: 2.2초 (3.4배 빠름)", size=18, bold=True, color=INK)
 
 
 # ============================================
@@ -460,39 +460,40 @@ def s_theory_wm():
          "수업 12주차 · Bounded Rationality (제한된 합리성)",
          size=11, bold=True, color=ACCENT)
 
-    card(s, 0.7, 2.75, 5.95, 1.7, fill=PAPER)
-    text(s, 0.95, 2.9, 5.5, 0.35, "두 가지 원리", size=11, bold=True, color=MUTED)
+    card(s, 0.7, 2.75, 5.95, 1.8, fill=RGBColor(0xF7, 0xF8, 0xFB), border_width=0)
+    text(s, 0.95, 2.9, 5.5, 0.4, "두 가지 원리", size=13, bold=True, color=MUTED)
     fp = FORMULAS / "f_wm.png"
     if fp.exists():
-        s.shapes.add_picture(str(fp), Inches(0.95), Inches(3.3), height=Inches(0.5))
-    text(s, 0.95, 3.95, 5.5, 0.45,
-         "Simon (1956): 한계 초과 → Satisficing (만족화)",
-         size=13, bold=True, color=INK)
+        s.shapes.add_picture(str(fp), Inches(0.95), Inches(3.3), height=Inches(0.55))
+    text(s, 0.95, 4.0, 5.5, 0.5,
+         "한계 초과 시 만족화(Satisficing)로 후퇴",
+         size=15, bold=True, color=INK)
 
-    text(s, 0.7, 4.6, 5.7, 0.4,
-         "Satisficing이란?",
-         size=11, bold=True, color=INK)
-    text(s, 0.95, 5.0, 5.5, 1.0,
-         "최적(optimal) 선택을 포기하고\n\"그럭저럭 괜찮은(good enough)\" 첫 번째 옵션에서 멈춤",
-         size=13, color=INK_2, line_spacing=1.3)
+    text(s, 0.7, 4.85, 5.7, 0.4,
+         "만족화란",
+         size=14, bold=True, color=INK)
+    text(s, 0.95, 5.25, 5.5, 1.2,
+         "최적 선택을 포기하고\n첫 번째로 \"괜찮은\" 옵션에서 멈춘다.",
+         size=15, color=INK_2, line_spacing=1.4)
 
-    text(s, 0.7, 6.4, 5.7, 0.35, "비유 — 카페 메뉴", size=11, bold=True, color=INK)
-    text(s, 0.95, 6.75, 5.5, 0.4,
-         "메뉴 3개: 다 비교 가능 / 메뉴 30개: \"그냥 라떼\"",
-         size=12, color=MUTED)
+    text(s, 0.7, 6.5, 5.7, 0.4, "비유 — 카페 메뉴", size=14, bold=True, color=INK)
+    text(s, 0.95, 6.9, 5.5, 0.5,
+         "메뉴 3개면 다 비교. 메뉴 30개면 그냥 라떼.",
+         size=14, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
     text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=15, bold=True, color=ACCENT)
     text(s, 7.1, 3.45, 5.3, 0.6,
          "\"팀장이 2명 직접 지명\"",
-         size=18, bold=True, color=INK)
+         size=20, bold=True, color=INK)
     text(s, 7.1, 4.2, 5.3, 1.5,
          "후보가 많으면 머리에 다 들어오지 않는다.\n떠오르는 친한 사람으로 결정한다.\n친분 기반 팀, 역량 균형이 깨진다.",
-         size=14, color=INK_2, line_spacing=1.45)
+         size=15, color=INK_2, line_spacing=1.5)
 
-    line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT)
-    text(s, 7.1, 5.95, 5, 0.4, "시뮬레이션 — 팀 만족도", size=12, bold=True, color=ACCENT)
-    text(s, 7.1, 6.4, 5.3, 0.4, "후보 15명, 정보 X: 70% 이하", size=14, color=INK_2)
+    line(s, 7.1, 5.95, 12.4, 5.95, color=ACCENT)
+    text(s, 7.1, 6.05, 5, 0.4, "시뮬레이션 — 팀 만족도", size=14, bold=True, color=ACCENT)
+    text(s, 7.1, 6.5, 5.3, 0.4, "정보 없이 15명 중: 70% 이하", size=15, color=INK_2)
+    text(s, 7.1, 6.95, 5.3, 0.4, "프로필 카드 제공: 92%", size=18, bold=True, color=INK)
     text(s, 7.1, 6.85, 5.3, 0.4, "프로필 카드 제공: 92%", size=16, bold=True, color=INK)
 
 
@@ -574,7 +575,7 @@ def s_theory_framing():
     line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT_2)
     text(s, 7.1, 5.95, 5, 0.4, "예상 결과", size=12, bold=True, color=ACCENT_2)
     text(s, 7.1, 6.4, 5.3, 0.4, "+10 보고 자원: 적당함", size=14, color=INK_2)
-    text(s, 7.1, 6.85, 5.3, 0.4, "감점 피하려 자원: 약 2배", size=16, bold=True, color=INK)
+    text(s, 7.1, 6.85, 5.3, 0.4, "감점 피하려 자원: 약 2배", size=18, bold=True, color=INK)
 
 
 # ============================================
