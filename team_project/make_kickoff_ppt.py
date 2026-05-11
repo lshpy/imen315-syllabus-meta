@@ -73,14 +73,29 @@ def chip(s, x, y, w, h, label, color=ACCENT, text_color=WHITE, size=10):
         r.font.color.rgb = text_color; r.font.name = FONT
 
 
-def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75):
+def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75, accent=None):
+    """그림자 느낌 + 위쪽 강조 바 옵션"""
+    # 그림자 (살짝 어두운 카드를 오프셋해서 깔기)
+    shadow = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                 Inches(x + 0.04), Inches(y + 0.06),
+                                 Inches(w), Inches(h))
+    shadow.fill.solid(); shadow.fill.fore_color.rgb = RGBColor(0xE9, 0xEB, 0xF0)
+    shadow.line.fill.background(); shadow.adjustments[0] = 0.05
+    # 메인 카드
     sh = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
     sh.fill.solid(); sh.fill.fore_color.rgb = fill
     if border_width > 0:
         sh.line.color.rgb = border; sh.line.width = Pt(border_width)
     else:
         sh.line.fill.background()
-    sh.adjustments[0] = 0.06
+    sh.adjustments[0] = 0.05
+    # 위쪽 액센트 바 (있을 때)
+    if accent is not None:
+        bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
+                                  Inches(x + 0.15), Inches(y),
+                                  Inches(w - 0.3), Inches(0.08))
+        bar.fill.solid(); bar.fill.fore_color.rgb = accent
+        bar.line.fill.background()
 
 
 def page_no(s, n):
@@ -197,11 +212,11 @@ def s_predicted_behavior():
     for i, (name, mech, pred, color) in enumerate(items):
         y = 2.3 + i * 1.13
         card(s, 0.7, y, 11.9, 1.0)
-        bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.7), Inches(y), Inches(0.1), Inches(1.0))
+        bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.7), Inches(y), Inches(0.12), Inches(1.0))
         bar.fill.solid(); bar.fill.fore_color.rgb = color; bar.line.fill.background()
-        text(s, 0.95, y + 0.18, 5.5, 0.4, name, size=14, bold=True, color=INK)
-        text(s, 0.95, y + 0.58, 7.0, 0.35, mech, size=10, color=INK_2)
-        text(s, 8.5, y + 0.32, 4.1, 0.4, pred, size=11, bold=True, color=color)
+        text(s, 1.0, y + 0.18, 5.5, 0.4, name, size=16, bold=True, color=INK)
+        text(s, 1.0, y + 0.6, 7.0, 0.35, mech, size=12, color=INK_2)
+        text(s, 8.5, y + 0.32, 4.1, 0.4, pred, size=13, bold=True, color=color)
 
 
 # ============================================
@@ -228,16 +243,13 @@ def s_theories():
     for i, (name, src, fimg, desc, color) in enumerate(items):
         x = 0.7 + (i % 2) * 6.15
         y = 2.3 + (i // 2) * 2.4
-        card(s, x, y, 5.95, 2.15)
-        bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(y), Inches(0.1), Inches(2.15))
-        bar.fill.solid(); bar.fill.fore_color.rgb = color; bar.line.fill.background()
-        text(s, x + 0.35, y + 0.15, 5.4, 0.4, name, size=16, bold=True, color=INK)
-        text(s, x + 0.35, y + 0.6, 5.4, 0.35, src, size=10, color=MUTED)
-        # 공식 PNG 임베드
+        card(s, x, y, 5.95, 2.15, accent=color)
+        text(s, x + 0.35, y + 0.25, 5.4, 0.5, name, size=18, bold=True, color=INK)
+        text(s, x + 0.35, y + 0.75, 5.4, 0.35, src, size=11, color=MUTED)
         fpath = FORMULAS / fimg
         if fpath.exists():
-            s.shapes.add_picture(str(fpath), Inches(x + 0.35), Inches(y + 1.0), height=Inches(0.55))
-        text(s, x + 0.35, y + 1.7, 5.4, 0.4, desc, size=11, color=color)
+            s.shapes.add_picture(str(fpath), Inches(x + 0.35), Inches(y + 1.1), height=Inches(0.5))
+        text(s, x + 0.35, y + 1.7, 5.4, 0.4, desc, size=12, color=color)
     text(s, 0.7, 7.0, 12, 0.4,
          "→ 다음 4장에서 각 이론을 자세히 풀어봅니다.",
          size=11, bold=True, color=ACCENT, align=PP_ALIGN.CENTER)
