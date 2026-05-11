@@ -1121,45 +1121,46 @@ def s_improvements():
     header(s, "OUR PROPOSAL", "우리가 제안하는 개선안 3가지", 20)
 
     text(s, 0.7, 2.25, 12, 0.4,
-         "강의계획서의 4가지 규칙을 분석해보니, 이론에서 자동으로 개선안이 도출됩니다.",
-         size=12, color=INK_2)
+         "강의계획서의 문제를 이론으로 분석하면, 개선안이 자연스럽게 따라옵니다.",
+         size=13, color=INK_2)
 
     items = [
         ("01", "분산 평가", "격주 퀴즈 6회 + 기말 40%",
-         "기말 한 번이 아니라 격주마다 작은 퀴즈로 나누어 본다.",
-         "기억이 사라지기 전에 다시 인출 → 학기말 벼락치기 방지",
-         "Forgetting Curve · 분산 학습", ACCENT_4),
-        ("02", "프로필 카드", "후보별 4가지 정보를 시각화",
-         "팀장이 후보 평가할 때 역량·시간·관심·경험을 카드로 제공.",
-         "머리에 다 담을 필요 없이 외부 인터페이스로 비교 가능",
-         "Working Memory · 7±2 한계 우회", ACCENT),
-        ("03", "명확한 가산", "감점 표현 → +10 가산으로 통일",
-         "모호한 \"현저히 낮은 경우 감점\" 대신 명확한 가산만 사용.",
-         "학생이 모호한 위협 회피가 아니라 보상으로 동기 부여",
-         "Framing Effect · 손실 회피 제거", ACCENT_2),
+         "기말 한 번이 아니라\n격주마다 작은 퀴즈로 나누어 본다.",
+         "Forgetting Curve", ACCENT_4),
+        ("02", "프로필 카드", "후보별 정보를 카드로 시각화",
+         "팀장이 후보 평가할 때\n역량·시간·관심을 한 화면에 보여준다.",
+         "Working Memory 7±2", ACCENT),
+        ("03", "명확한 가산", "모호한 감점 → +10 가산만",
+         "기준이 모호한 \"감점\" 표현 대신\n명확한 +10 가산만 사용한다.",
+         "Framing Effect", ACCENT_2),
     ]
-    for i, (num, name, what, mech, effect, theory, color) in enumerate(items):
+    for i, (num, name, what, mech, theory, color) in enumerate(items):
         x = 0.7 + i * 4.1
-        card(s, x, 2.85, 3.9, 4.2)
-        bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(2.85), Inches(3.9), Inches(0.6))
-        bar.fill.solid(); bar.fill.fore_color.rgb = color; bar.line.fill.background()
-        text(s, x + 0.25, 2.95, 1.0, 0.4, num, size=14, bold=True, color=WHITE)
-        text(s, x + 0.95, 2.95, 3, 0.4, name, size=14, bold=True, color=WHITE)
 
-        text(s, x + 0.25, 3.55, 3.5, 0.4, what, size=10, bold=True, color=INK)
-        text(s, x + 0.25, 4.05, 3.5, 1.1, mech, size=10, color=INK_2, line_spacing=1.4)
+        # 상단 큰 번호 원
+        from pptx.enum.shapes import MSO_SHAPE as M
+        circle = s.shapes.add_shape(M.OVAL, Inches(x + 0.2), Inches(2.95),
+                                     Inches(1.0), Inches(1.0))
+        circle.fill.solid(); circle.fill.fore_color.rgb = color
+        circle.line.fill.background()
+        text(s, x + 0.2, 3.1, 1.0, 0.7, num, size=26, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
-        line(s, x + 0.25, 5.3, x + 3.65, 5.3)
-        text(s, x + 0.25, 5.4, 3.5, 0.35, "효과", size=9, bold=True, color=color)
-        text(s, x + 0.25, 5.7, 3.5, 0.8, effect, size=9, color=INK_2, line_spacing=1.3)
+        # 메인 카드 (번호 원 아래)
+        card(s, x, 4.2, 3.9, 2.8, fill=PAPER, border=color, border_width=1.2)
 
-        line(s, x + 0.25, 6.55, x + 3.65, 6.55)
-        text(s, x + 0.25, 6.6, 3.5, 0.35, "근거 이론", size=9, bold=True, color=color)
-        text(s, x + 0.25, 6.9, 3.5, 0.35, theory, size=9, color=INK_2)
+        # 제목
+        text(s, x + 0.25, 4.4, 3.5, 0.55, name, size=22, bold=True, color=INK)
+        # 부제 (한 줄 설명)
+        text(s, x + 0.25, 5.0, 3.5, 0.4, what, size=12, bold=True, color=color)
+        # 본문
+        text(s, x + 0.25, 5.5, 3.5, 1.0, mech, size=13, color=INK_2, line_spacing=1.5)
+        # 근거 이론 배지
+        chip(s, x + 0.25, 6.55, 3.4, 0.35, "근거: " + theory, color=color, size=10)
 
     text(s, 0.7, 7.2, 12, 0.3,
-         "T1 설문은 이 개선안이 학생 인식을 바꾸는지, T2 시뮬은 약한 학생도 도와주는지 검증",
-         size=10, color=MUTED, align=PP_ALIGN.CENTER)
+         "T1 설문은 인식 변화, T2 시뮬은 약한 학생 보호 효과를 각각 검증",
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
