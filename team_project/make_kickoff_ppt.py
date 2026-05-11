@@ -395,19 +395,18 @@ def s_theory_forget():
          size=10, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFE, 0xF3, 0xC7), border=ACCENT_4)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과", size=11, bold=True, color=ACCENT_4)
-    text(s, 7.1, 3.3, 5.3, 0.55,
-         "\"중간고사 폐지, 기말고사 1회 (40%)\"",
-         size=14, bold=True, color=INK)
-    text(s, 7.1, 4.0, 5.3, 1.5,
-         "3월에 배운 내용을 6월 시험에서 떠올려야 한다.\n80일이 지났으니 기억이 거의 사라진 상태.\n결과적으로 시험 직전 벼락치기로 몰린다.",
-         size=11, color=INK_2, line_spacing=1.4)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT_4)
+    text(s, 7.1, 3.45, 5.3, 0.6,
+         "\"기말고사 1회 40%\"",
+         size=18, bold=True, color=INK)
+    text(s, 7.1, 4.2, 5.3, 1.5,
+         "3월에 배운 걸 6월 시험에서 떠올려야 한다.\n80일이 지나 기억은 거의 사라진 상태.\n결국 시험 직전 벼락치기.",
+         size=14, color=INK_2, line_spacing=1.45)
 
-    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_4)
-    text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과 — 시험장 인출 시간", size=10, bold=True, color=ACCENT_4)
-    text(s, 7.1, 6.0, 5.3, 0.4, "단일 기말 학생: 답 떠올리는 데 약 7.4초", size=11, color=INK_2)
-    text(s, 7.1, 6.4, 5.3, 0.4, "격주 퀴즈 학생: 약 2.2초 (3.4배 빠름)", size=12, bold=True, color=INK)
-    chip(s, 7.1, 6.85, 2.2, 0.4, "인출 3.4배 빠름", color=ACCENT_4)
+    line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT_4)
+    text(s, 7.1, 5.95, 5, 0.4, "시뮬레이션 — 시험장 인출 시간", size=12, bold=True, color=ACCENT_4)
+    text(s, 7.1, 6.4, 5.3, 0.4, "단일 기말: 7.4초", size=14, color=INK_2)
+    text(s, 7.1, 6.85, 5.3, 0.4, "격주 퀴즈: 2.2초 (3.4배 빠름)", size=16, bold=True, color=INK)
 
 
 # ============================================
@@ -476,19 +475,18 @@ def s_theory_wm():
          size=11, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과", size=11, bold=True, color=ACCENT)
-    text(s, 7.1, 3.3, 5.3, 0.55,
-         "\"팀장이 팀원 중 2명을 직접 지명\"",
-         size=14, bold=True, color=INK)
-    text(s, 7.1, 4.0, 5.3, 1.3,
-         "후보가 많으면 머리에 다 들어오지 않는다.\n떠오르는 친한 사람으로 결정하게 된다.\n결과적으로 친분 기반 팀, 역량 균형이 깨진다.",
-         size=11, color=INK_2, line_spacing=1.4)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT)
+    text(s, 7.1, 3.45, 5.3, 0.6,
+         "\"팀장이 2명 직접 지명\"",
+         size=18, bold=True, color=INK)
+    text(s, 7.1, 4.2, 5.3, 1.5,
+         "후보가 많으면 머리에 다 들어오지 않는다.\n떠오르는 친한 사람으로 결정한다.\n친분 기반 팀, 역량 균형이 깨진다.",
+         size=14, color=INK_2, line_spacing=1.45)
 
-    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT)
-    text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과 — 팀 구성 만족도", size=10, bold=True, color=ACCENT)
-    text(s, 7.1, 6.0, 5.3, 0.4, "후보 정보 없이 N=15: 만족도 70% 이하", size=11, color=INK_2)
-    text(s, 7.1, 6.4, 5.3, 0.4, "프로필 카드 주면: 92% 유지", size=12, bold=True, color=INK)
-    chip(s, 7.1, 6.85, 2.5, 0.4, "한계 우회 가능", color=ACCENT)
+    line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT)
+    text(s, 7.1, 5.95, 5, 0.4, "시뮬레이션 — 팀 만족도", size=12, bold=True, color=ACCENT)
+    text(s, 7.1, 6.4, 5.3, 0.4, "후보 15명, 정보 X: 70% 이하", size=14, color=INK_2)
+    text(s, 7.1, 6.85, 5.3, 0.4, "프로필 카드 제공: 92%", size=16, bold=True, color=INK)
 
 
 # ============================================
@@ -558,19 +556,18 @@ def s_theory_framing():
          size=10, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과", size=11, bold=True, color=ACCENT_2)
-    text(s, 7.1, 3.3, 5.3, 0.55,
-         "\"+10점 가산\" vs \"현저히 낮다고 판단 시 감점\"",
-         size=13, bold=True, color=INK)
-    text(s, 7.1, 4.0, 5.3, 1.5,
-         "+10은 명확한 수치의 보상이다.\n반면 감점은 기준이 모호한 위협이다.\n학생은 모호한 위협에 더 강하게 회피한다.",
-         size=11, color=INK_2, line_spacing=1.4)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT_2)
+    text(s, 7.1, 3.45, 5.3, 0.5,
+         "\"+10 가산\" vs \"감점\"",
+         size=18, bold=True, color=INK)
+    text(s, 7.1, 4.1, 5.3, 1.5,
+         "+10은 명확한 보상.\n감점은 기준이 모호한 위협.\n학생은 모호한 위협에 더 강하게 회피한다.",
+         size=14, color=INK_2, line_spacing=1.45)
 
-    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_2)
-    text(s, 7.1, 5.65, 5, 0.35, "예상 결과 — 표현만 달라도 반응 차이", size=10, bold=True, color=ACCENT_2)
-    text(s, 7.1, 6.0, 5.3, 0.4, "+10 가산 보고 자원하는 학생: 적당함", size=11, color=INK_2)
-    text(s, 7.1, 6.4, 5.3, 0.4, "감점 회피하려 자원하는 학생: 약 2배 많음", size=12, bold=True, color=INK)
-    chip(s, 7.1, 6.85, 2.4, 0.4, "손실 회피 효과", color=ACCENT_2)
+    line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT_2)
+    text(s, 7.1, 5.95, 5, 0.4, "예상 결과", size=12, bold=True, color=ACCENT_2)
+    text(s, 7.1, 6.4, 5.3, 0.4, "+10 보고 자원: 적당함", size=14, color=INK_2)
+    text(s, 7.1, 6.85, 5.3, 0.4, "감점 피하려 자원: 약 2배", size=16, bold=True, color=INK)
 
 
 # ============================================
@@ -1088,7 +1085,7 @@ def s_t2_examples():
     # 우측 — 자세한 해석 (스토리)
     card(s, 7.95, 2.85, 4.7, 4.2, fill=RGBColor(0xFA, 0xFB, 0xFC), border=ACCENT, border_width=0)
 
-    # 학생 비교: 김민준 vs 이서연
+    # 학생 비교: 김민준 vs 홍길동
     text(s, 8.15, 3.0, 4.4, 0.35, "두 학생을 따라가 봅시다", size=11, bold=True, color=ACCENT)
 
     # 김민준 박스
@@ -1099,9 +1096,9 @@ def s_t2_examples():
          "분산 평가 도입: 10.2초 (조금 빨라짐)",
          size=10, color=INK_2, line_spacing=1.4)
 
-    # 이서연 박스
+    # 홍길동 박스
     card(s, 8.15, 5.1, 4.3, 1.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
-    text(s, 8.35, 5.2, 4, 0.35, "🔴 이서연 (약한 학생)", size=11, bold=True, color=ACCENT_2)
+    text(s, 8.35, 5.2, 4, 0.35, "🔴 홍길동 (약한 학생)", size=11, bold=True, color=ACCENT_2)
     text(s, 8.35, 5.55, 4, 1.0,
          "기존 강의계획서: 22.3초 (1.8배 손해)\n"
          "분산 평가 도입: 13.5초 (대폭 개선)",
