@@ -73,15 +73,14 @@ def chip(s, x, y, w, h, label, color=ACCENT, text_color=WHITE, size=10):
         r.font.color.rgb = text_color; r.font.name = FONT
 
 
-def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75, accent=None):
-    """그림자 느낌 + 위쪽 강조 바 옵션"""
-    # 그림자 (살짝 어두운 카드를 오프셋해서 깔기)
-    shadow = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
-                                 Inches(x + 0.04), Inches(y + 0.06),
-                                 Inches(w), Inches(h))
-    shadow.fill.solid(); shadow.fill.fore_color.rgb = RGBColor(0xE9, 0xEB, 0xF0)
-    shadow.line.fill.background(); shadow.adjustments[0] = 0.05
-    # 메인 카드
+def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75, accent=None, shadow=True):
+    """카드: 미세 그림자 + 옵션 위쪽 액센트 바"""
+    if shadow:
+        sh_shadow = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                        Inches(x + 0.03), Inches(y + 0.04),
+                                        Inches(w), Inches(h))
+        sh_shadow.fill.solid(); sh_shadow.fill.fore_color.rgb = RGBColor(0xEC, 0xEE, 0xF2)
+        sh_shadow.line.fill.background(); sh_shadow.adjustments[0] = 0.05
     sh = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
     sh.fill.solid(); sh.fill.fore_color.rgb = fill
     if border_width > 0:
@@ -89,7 +88,6 @@ def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75, accent=No
     else:
         sh.line.fill.background()
     sh.adjustments[0] = 0.05
-    # 위쪽 액센트 바 (있을 때)
     if accent is not None:
         bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE,
                                   Inches(x + 0.15), Inches(y),
