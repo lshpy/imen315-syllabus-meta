@@ -54,17 +54,32 @@ def line(s, x1, y1, x2, y2, color=DIVIDER, weight=1.5):
     l.line.color.rgb = color; l.line.width = Pt(weight)
 
 
-def chip(s, x, y, w, h, label, color=ACCENT, text_color=WHITE):
+def chip(s, x, y, w, h, label, color=ACCENT, text_color=WHITE, size=10):
+    from pptx.enum.text import MSO_ANCHOR
     sh = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
     sh.fill.solid(); sh.fill.fore_color.rgb = color
     sh.line.fill.background(); sh.adjustments[0] = 0.5
-    text(s, x, y + 0.05, w, h - 0.1, label, size=10, bold=True, color=text_color, align=PP_ALIGN.CENTER)
+    tb = s.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
+    tf = tb.text_frame
+    tf.margin_left = tf.margin_right = Inches(0.04)
+    tf.margin_top = tf.margin_bottom = Inches(0.0)
+    tf.word_wrap = False
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]
+    p.text = label; p.alignment = PP_ALIGN.CENTER
+    for r in p.runs:
+        r.font.size = Pt(size); r.font.bold = True
+        r.font.color.rgb = text_color; r.font.name = FONT
 
 
-def card(s, x, y, w, h, fill=PAPER, border=DIVIDER):
+def card(s, x, y, w, h, fill=PAPER, border=DIVIDER, border_width=0.75):
     sh = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
     sh.fill.solid(); sh.fill.fore_color.rgb = fill
-    sh.line.color.rgb = border; sh.line.width = Pt(1); sh.adjustments[0] = 0.04
+    if border_width > 0:
+        sh.line.color.rgb = border; sh.line.width = Pt(border_width)
+    else:
+        sh.line.fill.background()
+    sh.adjustments[0] = 0.06
 
 
 def page_no(s, n):
@@ -175,8 +190,8 @@ def s_predicted_behavior():
          "인출 시간 7.4초 → 2.2초 (3.4×)", ACCENT_4),
         ("친분 기반 satisficing", "후보 평가의 작업 기억 한계 초과",
          "N>8에서 평가 완성도 70%↓", ACCENT),
-        ("최소 기여 수렴 (무임승차)", "loss frame 약, gain frame 강",
-         "−10 표현이 +10보다 자원 의도 ↑", ACCENT_2),
+        ("최소 기여 수렴 (무임승차)", "모호한 loss frame 회피 → 책임 회피 강함",
+         "모호한 감점 표현이 +10 가산보다 자원 의도 ↑", ACCENT_2),
     ]
     for i, (name, mech, pred, color) in enumerate(items):
         y = 2.3 + i * 1.13
@@ -295,23 +310,22 @@ def s_theory_utility():
          "슬롯머신 — 보상이 \"가끔\" 무작위로 주어질 때\n행동이 가장 강하게 굳어짐",
          size=11, color=INK_2, line_spacing=1.3)
 
-    # 우측: 강의계획서 적용 + 정량 예측 (라이트 카드)
+    # 우측: 자연어 설명
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEC, 0xFD, 0xF5), border=ACCENT_3)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서 적용",
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과",
          size=11, bold=True, color=ACCENT_3)
-    text(s, 7.1, 3.4, 5.3, 1.0,
+    text(s, 7.1, 3.3, 5.3, 0.55,
          "\"출석 예정일 외에도 임의로 체크\"",
-         size=15, bold=True, color=INK, line_spacing=1.3)
-    text(s, 7.1, 4.45, 5.3, 0.5,
-         "= 가변비율 스케줄 그 자체",
-         size=11, color=INK_2)
+         size=14, bold=True, color=INK)
+    text(s, 7.1, 4.0, 5.3, 1.2,
+         "→ 학생은 \"오늘 안 가면 잡힐까?\" 모름.\n→ 슬롯머신처럼 매일 출석하게 됨.\n→ 행동이 굳어서 한 학기 내내 출석.",
+         size=11, color=INK_2, line_spacing=1.4)
 
-    line(s, 7.1, 5.05, 12.4, 5.05, color=ACCENT_3)
-    text(s, 7.1, 5.15, 5, 0.35, "정량 예측 (시뮬 N=1000)", size=10, bold=True, color=ACCENT_3)
-    text(s, 7.1, 5.55, 5.3, 0.5, "고정 일정 (매주 월) → 6.7%", size=12, color=INK_2)
-    text(s, 7.1, 6.0, 5.3, 0.5, "랜덤 + 비공개 → 20.0%", size=14, bold=True, color=INK)
-    chip(s, 7.1, 6.6, 1.6, 0.4, "3× 증가", color=ACCENT_3)
-    text(s, 8.85, 6.65, 4, 0.35, "← 검증할 값", size=11, color=MUTED)
+    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_3)
+    text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과", size=10, bold=True, color=ACCENT_3)
+    text(s, 7.1, 6.0, 5.3, 0.4, "월요일만 체크하면 출석률 6.7%", size=11, color=INK_2)
+    text(s, 7.1, 6.4, 5.3, 0.4, "랜덤+비공개로 하면 20% (3배 ↑)", size=12, bold=True, color=INK)
+    chip(s, 7.1, 6.85, 2.0, 0.4, "검증할 값", color=ACCENT_3)
 
 
 # ============================================
@@ -380,19 +394,19 @@ def s_theory_forget():
          size=10, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFE, 0xF3, 0xC7), border=ACCENT_4)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서 적용", size=11, bold=True, color=ACCENT_4)
-    text(s, 7.1, 3.4, 5.3, 1.0,
-         "\"중간고사 폐지, 단일 기말 40%\"",
-         size=15, bold=True, color=INK, line_spacing=1.3)
-    text(s, 7.1, 4.45, 5.3, 0.5,
-         "= 학기 초 학습이 t = 80일 거리 → B 급락",
-         size=11, color=INK_2)
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과", size=11, bold=True, color=ACCENT_4)
+    text(s, 7.1, 3.3, 5.3, 0.55,
+         "\"중간고사 폐지, 기말고사 1회 (40%)\"",
+         size=14, bold=True, color=INK)
+    text(s, 7.1, 4.0, 5.3, 1.5,
+         "→ 3월에 배운 내용을 6월 시험에서 떠올려야 함.\n→ 80일이나 지났으니 기억이 거의 사라짐.\n→ 시험 직전 벼락치기로 몰림 (massed practice).",
+         size=11, color=INK_2, line_spacing=1.4)
 
-    line(s, 7.1, 5.05, 12.4, 5.05, color=ACCENT_4)
-    text(s, 7.1, 5.15, 5, 0.35, "정량 예측 (시뮬)", size=10, bold=True, color=ACCENT_4)
-    text(s, 7.1, 5.5, 5.3, 0.4, "단일 기말 → B ≈ −2.0, T ≈ 7.4초", size=12, color=INK_2)
-    text(s, 7.1, 5.95, 5.3, 0.4, "격주 퀴즈 → B ≈ −0.8, T ≈ 2.2초", size=14, bold=True, color=INK)
-    chip(s, 7.1, 6.55, 2.0, 0.4, "3.4× 빠른 인출", color=ACCENT_4)
+    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_4)
+    text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과 — 시험장 인출 시간", size=10, bold=True, color=ACCENT_4)
+    text(s, 7.1, 6.0, 5.3, 0.4, "단일 기말 학생: 답 떠올리는 데 약 7.4초", size=11, color=INK_2)
+    text(s, 7.1, 6.4, 5.3, 0.4, "격주 퀴즈 학생: 약 2.2초 (3.4배 빠름)", size=12, bold=True, color=INK)
+    chip(s, 7.1, 6.85, 2.2, 0.4, "3.4× 빠른 인출", color=ACCENT_4)
 
 
 # ============================================
@@ -461,20 +475,19 @@ def s_theory_wm():
          size=11, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서 적용", size=11, bold=True, color=ACCENT)
-    text(s, 7.1, 3.3, 5.3, 0.6,
-         "\"팀장이 후보 중 2명을 직접 지명\"",
-         size=15, bold=True, color=INK, line_spacing=1.2)
-    text(s, 7.1, 4.0, 5.3, 0.5,
-         "= 후보 N개 정보 동시 처리 요구",
-         size=11, color=INK_2)
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과", size=11, bold=True, color=ACCENT)
+    text(s, 7.1, 3.3, 5.3, 0.55,
+         "\"팀장이 팀원 중 2명을 직접 지명\"",
+         size=14, bold=True, color=INK)
+    text(s, 7.1, 4.0, 5.3, 1.3,
+         "→ 후보가 많으면 머리에 다 안 들어옴.\n→ 떠오르는 친한 사람으로 결정 (satisficing).\n→ 결과: 친분 기반 팀 구성, 역량 균형 깨짐.",
+         size=11, color=INK_2, line_spacing=1.4)
 
-    line(s, 7.1, 4.7, 12.4, 4.7, color=ACCENT)
-    text(s, 7.1, 4.85, 5, 0.35, "정량 예측 (시뮬)", size=10, bold=True, color=ACCENT)
-    text(s, 7.1, 5.25, 5.3, 0.4, "정보 무제공 N=15 → 평가 완성도 ▼ 70%", size=11, color=INK_2)
-    text(s, 7.1, 5.7, 5.3, 0.4, "프로필 카드 N≤7 → 92% 유지", size=11, color=INK_2)
-    text(s, 7.1, 6.15, 5.3, 0.4, "매칭 알고리즘 → N과 무관 100%", size=13, bold=True, color=INK)
-    chip(s, 7.1, 6.7, 2.4, 0.4, "WM 한계 우회 가능", color=ACCENT)
+    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT)
+    text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과 — 팀 구성 만족도", size=10, bold=True, color=ACCENT)
+    text(s, 7.1, 6.0, 5.3, 0.4, "후보 정보 없이 N=15: 만족도 70% 이하", size=11, color=INK_2)
+    text(s, 7.1, 6.4, 5.3, 0.4, "프로필 카드 주면: 92% 유지", size=12, bold=True, color=INK)
+    chip(s, 7.1, 6.85, 2.5, 0.4, "한계 우회 가능", color=ACCENT)
 
 
 # ============================================
@@ -544,20 +557,19 @@ def s_theory_framing():
          size=10, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
-    text(s, 7.1, 2.95, 5, 0.4, "강의계획서 적용", size=11, bold=True, color=ACCENT_2)
-    text(s, 7.1, 3.4, 5.3, 1.0,
-         "\"팀장 +10 가산\" vs \"기여 저조 −10 차감\"",
-         size=14, bold=True, color=INK, line_spacing=1.3)
-    text(s, 7.1, 4.45, 5.3, 0.5,
-         "= 동일 정책의 두 표현 (가상 비교)",
-         size=11, color=INK_2)
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과", size=11, bold=True, color=ACCENT_2)
+    text(s, 7.1, 3.3, 5.3, 0.55,
+         "\"+10점 가산\" vs \"현저히 낮다고 판단 시 감점\"",
+         size=13, bold=True, color=INK)
+    text(s, 7.1, 4.0, 5.3, 1.5,
+         "→ +10은 \"준다\"는 명확한 보상.\n→ 감점은 \"기준이 모호한 위협\".\n→ 학생은 모호한 위협에 더 강하게 회피 반응.",
+         size=11, color=INK_2, line_spacing=1.4)
 
-    line(s, 7.1, 5.05, 12.4, 5.05, color=ACCENT_2)
-    text(s, 7.1, 5.15, 5, 0.35, "예상 효과 크기", size=10, bold=True, color=ACCENT_2)
-    text(s, 7.1, 5.5, 5.3, 0.4, "Gain frame 자원 의도 — 약함", size=12, color=INK_2)
-    text(s, 7.1, 5.95, 5.3, 0.4, "Loss frame 자원 의도 — 약 2× 강함", size=14, bold=True, color=INK)
-    chip(s, 7.1, 6.55, 2.4, 0.4, "Cohen's d ≈ 0.5+", color=ACCENT_2)
-    text(s, 9.65, 6.6, 3, 0.35, "← 검증 목표", size=10, color=MUTED)
+    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_2)
+    text(s, 7.1, 5.65, 5, 0.35, "예상 결과 — 표현만 달라도 반응 차이", size=10, bold=True, color=ACCENT_2)
+    text(s, 7.1, 6.0, 5.3, 0.4, "+10 가산 보고 자원하는 학생: 적당함", size=11, color=INK_2)
+    text(s, 7.1, 6.4, 5.3, 0.4, "감점 회피하려 자원하는 학생: 약 2배 많음", size=12, bold=True, color=INK)
+    chip(s, 7.1, 6.85, 2.4, 0.4, "손실 회피 효과", color=ACCENT_2)
 
 
 # ============================================
@@ -568,30 +580,28 @@ def s_hypotheses():
     header(s, "HYPOTHESES", "우리가 데이터로 검증할 4가지 가설", 6)
 
     h = [
-        ("H1", "Framing", "ACCENT_2",
-         "동일 인센티브를 손실(-10)로 표현할 때\n이득(+10) 표현보다 자원 의도가 강하다.",
-         "독립표본 t-test (gain vs loss)"),
-        ("H2", "Satisficing", "ACCENT",
-         "후보 N이 작업기억 한계(7±2)를 초과할수록\n팀 구성 만족도가 급격히 감소한다.",
-         "1원 ANOVA (N=3 / 7 / 15) + Tukey"),
-        ("H3", "Utility", "ACCENT_3",
-         "출석 정책이 가변비율(랜덤+비공개)일수록\n결석 의도가 가장 낮다.",
-         "Within-subjects ANOVA (3 조건)"),
-        ("H4", "Forgetting", "ACCENT_4",
-         "단일 기말 체제는 격주 퀴즈 체제보다\n학기 학습시간 분산이 더 크다 (벼락치기).",
-         "F-test 분산 비교"),
+        ("H1", "표현 방식 효과", "ACCENT_2",
+         "모호한 감점 표현이 명확한 +10 가산보다 회피·자원 의도가 더 강하다.",
+         "감점 그룹 응답이 +10 그룹보다 약 2배 더 강한 의도 (Cohen's d ≈ 0.5+)"),
+        ("H2", "그럭저럭 만족", "ACCENT",
+         "후보 N이 7명을 넘어가면 팀 구성 만족도가 급격히 떨어진다.",
+         "N=3·7 그룹은 만족도 5~6점, N=15 그룹은 4점 이하로 급감"),
+        ("H3", "효용 학습", "ACCENT_3",
+         "출석 정책이 무작위+비공개일수록 결석 의도가 가장 낮다.",
+         "결석 의도: 고정 매주월 > 랜덤 빈도공개 > 랜덤 비공개 순서로 감소"),
+        ("H4", "망각 곡선", "ACCENT_4",
+         "단일 기말 체제는 격주 퀴즈 체제보다 학습시간 분산이 훨씬 크다.",
+         "단일 기말: 8주차 5h, 15주차 15h (3배). 격주 퀴즈: 8주차·15주차 ≈ 9h"),
     ]
     color_map = {"ACCENT": ACCENT, "ACCENT_2": ACCENT_2, "ACCENT_3": ACCENT_3, "ACCENT_4": ACCENT_4}
-    for i, (code, theory, color_key, body, test) in enumerate(h):
+    for i, (code, theory, color_key, body, expected) in enumerate(h):
         color = color_map[color_key]
-        y = 2.3 + i * 1.15
-        card(s, 0.7, y, 11.9, 1.0)
-        chip(s, 0.85, y + 0.25, 0.6, 0.5, code, color=color)
-        text(s, 1.6, y + 0.2, 1.5, 0.4, theory, size=11, bold=True, color=color)
-        text(s, 1.6, y + 0.55, 7.5, 0.45, body, size=12, color=INK)
-        line(s, 9.3, y + 0.25, 9.3, y + 0.85)
-        text(s, 9.5, y + 0.25, 3.2, 0.35, "통계 검정", size=9, color=MUTED)
-        text(s, 9.5, y + 0.55, 3.2, 0.4, test, size=10, bold=True, color=INK_2)
+        y = 2.3 + i * 1.18
+        card(s, 0.7, y, 11.9, 1.05)
+        chip(s, 0.9, y + 0.3, 0.85, 0.45, code, color=color, size=11)
+        text(s, 2.0, y + 0.18, 4.0, 0.35, theory, size=11, bold=True, color=color)
+        text(s, 2.0, y + 0.48, 10.5, 0.4, body, size=12, bold=True, color=INK)
+        text(s, 2.0, y + 0.78, 10.5, 0.35, "💡 우리가 보고 싶은 결과: " + expected, size=10, color=INK_2)
 
 
 # ============================================
@@ -875,77 +885,79 @@ def s_t1_distribution():
 
 
 # ============================================
-# 12. T2: 다중 에이전트 시뮬
+# 12. T2: 컴퓨터 시뮬 (쉽게 풀어쓰기)
 # ============================================
 def s_t2():
     s = slide()
-    header(s, "T2 · SIMULATION", "다중 에이전트 시뮬 — 분포 효과까지 보기", 12)
+    header(s, "T2 · 컴퓨터 시뮬레이션", "가상 학생 1000명을 만들어 \"약한 학생도 보호되는지\" 본다", 22)
 
-    text(s, 0.7, 2.4, 12, 0.4,
-         "개인과제는 학생 1명 평균 모델 → 팀과제는 N=1000 학생 분포 모델로 확장",
-         size=12, color=MUTED)
+    # 한 줄 메시지
+    text(s, 0.7, 2.3, 12, 0.45,
+         "왜 1000명이나? 평균만 보면 가려지는 진실이 있다.",
+         size=15, bold=True, color=INK)
+    text(s, 0.7, 2.8, 12, 0.45,
+         "예: \"평균 출석률 80%\"라고 해도, 학습률 낮은 학생은 30%일 수 있음.",
+         size=13, color=INK_2)
 
-    # 좌: 비교표
-    card(s, 0.7, 2.95, 6.2, 4.0)
-    text(s, 0.95, 3.1, 6, 0.4, "확장 비교", size=12, bold=True, color=ACCENT)
-    rows = [
-        ("학생 수", "1명 (평균)", "N = 1000"),
-        ("학습률 α", "0.15 고정", "N(0.15, 0.05)"),
-        ("망각 d", "0.50 고정", "N(0.50, 0.10)"),
-        ("WM 청크", "7 고정", "{5,6,7,8,9} 분포"),
-        ("동기", "가정 없음", "N(0.50, 0.20)"),
-        ("분석 단위", "평균값", "평균 + 하위 25%"),
-    ]
-    for i, (label, before, after) in enumerate(rows):
-        y = 3.6 + i * 0.5
-        text(s, 0.95, y, 1.8, 0.4, label, size=11, color=MUTED)
-        text(s, 2.7, y, 2.0, 0.4, before, size=11, color=INK_2)
-        text(s, 4.7, y, 2.2, 0.4, "→ " + after, size=11, bold=True, color=ACCENT)
+    # 큰 비교
+    line(s, 0.7, 3.6, 12.6, 3.6)
+    text(s, 0.7, 3.75, 12, 0.4, "개인과제 → 팀과제 확장", size=11, bold=True, color=ACCENT)
 
-    # 우: 분석 흐름
-    card(s, 7.05, 2.95, 5.55, 4.0)
-    text(s, 7.3, 3.1, 5, 0.4, "분석 종류", size=12, bold=True, color=ACCENT_2)
-    flows = [
-        ("분포 효과", "평균 vs 하위 25% (저성취 보호)"),
-        ("민감도", "α, d ±50% 변화에도 결론 유지?"),
-        ("개입 시뮬", "분산 퀴즈·프로필 카드 적용 효과"),
-        ("T1 캘리브레이션", "설문 추정치 → 시뮬 입력 보정"),
-    ]
-    for i, (name, desc) in enumerate(flows):
-        y = 3.6 + i * 0.85
-        text(s, 7.3, y, 5, 0.4, "▸ " + name, size=12, bold=True, color=INK)
-        text(s, 7.5, y + 0.35, 5, 0.4, desc, size=10, color=MUTED)
+    card(s, 0.7, 4.2, 5.95, 2.6, fill=PAPER)
+    text(s, 0.95, 4.35, 5.5, 0.4, "개인과제 (현재)", size=12, bold=True, color=MUTED)
+    text(s, 0.95, 4.8, 5.5, 0.5, "학생 1명 평균만", size=18, bold=True, color=INK)
+    text(s, 0.95, 5.4, 5.5, 1.3,
+         "모든 학생이 똑같이 학습률 0.15,\n작업 기억 7개라고 가정.\n→ \"평균적 학생\"만 본 결과.",
+         size=11, color=INK_2, line_spacing=1.4)
+
+    card(s, 6.85, 4.2, 5.75, 2.6, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
+    text(s, 7.1, 4.35, 5.3, 0.4, "팀과제 (확장)", size=12, bold=True, color=ACCENT)
+    text(s, 7.1, 4.8, 5.3, 0.5, "가상 학생 1000명, 사람마다 다르게", size=15, bold=True, color=INK)
+    text(s, 7.1, 5.4, 5.3, 1.3,
+         "학습률·기억력·작업 기억이 모두 다른\n1000명을 가상으로 만들어 시뮬.\n→ 평균뿐 아니라 하위 25%도 본다.",
+         size=11, color=INK_2, line_spacing=1.4)
+
+    # 핵심 메시지
+    text(s, 0.7, 7.0, 12, 0.4,
+         "→ 보고서 핵심 한 줄: \"개선안이 약한 학생도 도와주는가?\"",
+         size=12, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
 
 
 # ============================================
-# 13. T3: 친분 그래프
+# 13. T3: 친분 그래프 (쉽게)
 # ============================================
 def s_t3():
     s = slide()
-    header(s, "T3 · NETWORK", "친분 네트워크 시뮬 — 시각화 임팩트", 13)
+    header(s, "T3 · 친분 그래프 시뮬", "친구 관계를 그림으로 그려서 \"팀장이 누구를 뽑는지\" 시뮬", 23)
 
-    text(s, 0.7, 2.4, 12, 0.4,
-         "가상 학생 30명의 친분 그래프에서 팀장이 5조건으로 팀원 지명 → 결과 비교",
-         size=12, color=MUTED)
+    # 한 줄 메시지
+    text(s, 0.7, 2.3, 12, 0.45,
+         "사람 모집 없이도 친분 휴리스틱을 검증할 수 있다.",
+         size=15, bold=True, color=INK)
+    text(s, 0.7, 2.8, 12, 0.45,
+         "가상 학생 30명에 친한 정도를 다 설정 → 팀장이 5가지 방식으로 뽑게 함 → 그림으로 비교.",
+         size=12, color=INK_2)
+
+    line(s, 0.7, 3.6, 12.6, 3.6)
+    text(s, 0.7, 3.75, 12, 0.4, "5가지 팀장 선택 방식 (그림 5장 산출)", size=11, bold=True, color=ACCENT)
 
     conditions = [
-        ("A", "무작위", "랜덤 지명", "친분 편향 0", ACCENT_3),
-        ("B", "친분 우선", "closeness 상위", "친분↑ 역량↓", ACCENT_2),
-        ("C", "역량 우선", "ability 상위", "역량↑ 친분 0", ACCENT),
-        ("D", "WM 한계", "친한 7명 떠올림→ 선택", "★ Satisficing 발현", ACCENT_4),
-        ("E", "프로필카드", "정보 + 다양성", "균형", INK_2),
+        ("①", "무작위로 뽑기", "그냥 랜덤 5명", "친분 편향 0 → 비교 기준", ACCENT_3),
+        ("②", "친한 사람만", "친밀도 상위 5명", "친분 100%, 역량 낮음 (현실)", ACCENT_2),
+        ("③", "잘하는 사람만", "역량 상위 5명", "역량 100%, 친분 0 (이상)", ACCENT),
+        ("④", "머리에 떠오르는 사람", "친한 7명 떠올리고 그 중 5명", "현실의 satisficing", ACCENT_4),
+        ("⑤", "프로필 카드 보고", "정보 본 후 다양성 고려", "균형 잡힌 팀", INK_2),
     ]
     for i, (code, name, alg, expect, color) in enumerate(conditions):
-        y = 3.0 + i * 0.78
-        card(s, 0.7, y, 11.9, 0.65)
-        chip(s, 0.9, y + 0.13, 0.6, 0.4, code, color=color)
-        text(s, 1.7, y + 0.15, 2.5, 0.4, name, size=13, bold=True, color=INK)
-        text(s, 4.4, y + 0.15, 4.5, 0.4, alg, size=11, color=INK_2)
-        text(s, 9.0, y + 0.15, 3.5, 0.4, expect, size=11, bold=True, color=color)
+        y = 4.25 + i * 0.52
+        text(s, 0.95, y + 0.05, 0.4, 0.35, code, size=14, bold=True, color=color)
+        text(s, 1.5, y, 3.5, 0.4, name, size=12, bold=True, color=INK)
+        text(s, 5.2, y, 4.0, 0.4, alg, size=10, color=INK_2)
+        text(s, 9.4, y, 3.3, 0.4, expect, size=10, bold=True, color=color)
 
     text(s, 0.7, 7.0, 12, 0.4,
-         "산출: 5장 네트워크 그래프 PNG · 친분 편향 / 역량 std / 관심 entropy 측정",
-         size=11, color=MUTED, align=PP_ALIGN.CENTER)
+         "결과: 5장의 네트워크 그래프 → 발표 슬라이드 임팩트 최고",
+         size=12, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
 
 
 # ============================================
