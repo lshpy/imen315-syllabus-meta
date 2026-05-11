@@ -313,13 +313,13 @@ def s_theory_utility():
 
     # 우측: 자연어 설명
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEC, 0xFD, 0xF5), border=ACCENT_3)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과",
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과",
          size=11, bold=True, color=ACCENT_3)
     text(s, 7.1, 3.3, 5.3, 0.55,
          "\"출석 예정일 외에도 임의로 체크\"",
          size=14, bold=True, color=INK)
     text(s, 7.1, 4.0, 5.3, 1.2,
-         "→ 학생은 \"오늘 안 가면 잡힐까?\" 모름.\n→ 슬롯머신처럼 매일 출석하게 됨.\n→ 행동이 굳어서 한 학기 내내 출석.",
+         "학생은 \"오늘 안 가면 잡힐까\" 알 수 없다.\n슬롯머신과 같은 원리로 매일 출석하게 된다.\n행동이 굳어져 한 학기 내내 유지된다.",
          size=11, color=INK_2, line_spacing=1.4)
 
     line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_3)
@@ -395,19 +395,19 @@ def s_theory_forget():
          size=10, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFE, 0xF3, 0xC7), border=ACCENT_4)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과", size=11, bold=True, color=ACCENT_4)
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과", size=11, bold=True, color=ACCENT_4)
     text(s, 7.1, 3.3, 5.3, 0.55,
          "\"중간고사 폐지, 기말고사 1회 (40%)\"",
          size=14, bold=True, color=INK)
     text(s, 7.1, 4.0, 5.3, 1.5,
-         "→ 3월에 배운 내용을 6월 시험에서 떠올려야 함.\n→ 80일이나 지났으니 기억이 거의 사라짐.\n→ 시험 직전 벼락치기로 몰림 (massed practice).",
+         "3월에 배운 내용을 6월 시험에서 떠올려야 한다.\n80일이 지났으니 기억이 거의 사라진 상태.\n결과적으로 시험 직전 벼락치기로 몰린다.",
          size=11, color=INK_2, line_spacing=1.4)
 
     line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_4)
     text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과 — 시험장 인출 시간", size=10, bold=True, color=ACCENT_4)
     text(s, 7.1, 6.0, 5.3, 0.4, "단일 기말 학생: 답 떠올리는 데 약 7.4초", size=11, color=INK_2)
     text(s, 7.1, 6.4, 5.3, 0.4, "격주 퀴즈 학생: 약 2.2초 (3.4배 빠름)", size=12, bold=True, color=INK)
-    chip(s, 7.1, 6.85, 2.2, 0.4, "3.4× 빠른 인출", color=ACCENT_4)
+    chip(s, 7.1, 6.85, 2.2, 0.4, "인출 3.4배 빠름", color=ACCENT_4)
 
 
 # ============================================
@@ -476,12 +476,12 @@ def s_theory_wm():
          size=11, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과", size=11, bold=True, color=ACCENT)
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과", size=11, bold=True, color=ACCENT)
     text(s, 7.1, 3.3, 5.3, 0.55,
          "\"팀장이 팀원 중 2명을 직접 지명\"",
          size=14, bold=True, color=INK)
     text(s, 7.1, 4.0, 5.3, 1.3,
-         "→ 후보가 많으면 머리에 다 안 들어옴.\n→ 떠오르는 친한 사람으로 결정 (satisficing).\n→ 결과: 친분 기반 팀 구성, 역량 균형 깨짐.",
+         "후보가 많으면 머리에 다 들어오지 않는다.\n떠오르는 친한 사람으로 결정하게 된다.\n결과적으로 친분 기반 팀, 역량 균형이 깨진다.",
          size=11, color=INK_2, line_spacing=1.4)
 
     line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT)
@@ -558,12 +558,12 @@ def s_theory_framing():
          size=10, color=MUTED)
 
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서가 만들어내는 효과", size=11, bold=True, color=ACCENT_2)
+    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과", size=11, bold=True, color=ACCENT_2)
     text(s, 7.1, 3.3, 5.3, 0.55,
          "\"+10점 가산\" vs \"현저히 낮다고 판단 시 감점\"",
          size=13, bold=True, color=INK)
     text(s, 7.1, 4.0, 5.3, 1.5,
-         "→ +10은 \"준다\"는 명확한 보상.\n→ 감점은 \"기준이 모호한 위협\".\n→ 학생은 모호한 위협에 더 강하게 회피 반응.",
+         "+10은 명확한 수치의 보상이다.\n반면 감점은 기준이 모호한 위협이다.\n학생은 모호한 위협에 더 강하게 회피한다.",
          size=11, color=INK_2, line_spacing=1.4)
 
     line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_2)
@@ -602,7 +602,7 @@ def s_hypotheses():
         chip(s, 0.9, y + 0.3, 0.85, 0.45, code, color=color, size=11)
         text(s, 2.0, y + 0.18, 4.0, 0.35, theory, size=11, bold=True, color=color)
         text(s, 2.0, y + 0.48, 10.5, 0.4, body, size=12, bold=True, color=INK)
-        text(s, 2.0, y + 0.78, 10.5, 0.35, "💡 우리가 보고 싶은 결과: " + expected, size=10, color=INK_2)
+        text(s, 2.0, y + 0.78, 10.5, 0.35, "기대 결과 — " + expected, size=10, color=INK_2)
 
 
 # ============================================
@@ -918,9 +918,8 @@ def s_t2():
          "학습률·기억력·작업 기억이 모두 다른\n1000명을 가상으로 만들어 시뮬.\n→ 평균뿐 아니라 하위 25%도 본다.",
          size=11, color=INK_2, line_spacing=1.4)
 
-    # 핵심 메시지
     text(s, 0.7, 7.0, 12, 0.4,
-         "→ 보고서 핵심 한 줄: \"개선안이 약한 학생도 도와주는가?\"",
+         "분석 질문: 개선안이 약한 학생도 도와주는가",
          size=12, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
 
 
@@ -966,56 +965,44 @@ def s_t3():
 # ============================================
 def s_streamlit_demo_1():
     s = slide()
-    header(s, "T1 · LIVE DEMO 1/2", "응답자가 실제로 보는 화면 — 인트로 & 출석", 21)
+    header(s, "설문 화면 1", "응답자 화면 — 인트로 / 출석 시나리오", 21)
 
-    text(s, 0.7, 2.2, 12, 0.35,
-         "단톡에 풀면 학생들이 이렇게 보게 됩니다.",
-         size=11, color=MUTED)
-
-    # 좌: 인트로
     path1 = SHOTS / "01_intro.png"
     if path1.exists():
-        s.shapes.add_picture(str(path1), Inches(0.7), Inches(2.65), width=Inches(6.1))
-    text(s, 0.7, 6.85, 6.1, 0.35, "① 인트로 — 16 유형 미리보기 + 시작",
-         size=11, bold=True, color=ACCENT_3, align=PP_ALIGN.CENTER)
+        s.shapes.add_picture(str(path1), Inches(0.7), Inches(2.4), width=Inches(6.1))
+    text(s, 0.7, 6.6, 6.1, 0.35, "인트로 화면",
+         size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
+    text(s, 0.7, 6.95, 6.1, 0.3, "16 유형 미리 보여주고 닉네임 입력 후 시작",
+         size=10, color=MUTED, align=PP_ALIGN.CENTER)
 
-    # 우: 출석
     path2 = SHOTS / "02_attendance.png"
     if path2.exists():
-        s.shapes.add_picture(str(path2), Inches(6.95), Inches(2.65), width=Inches(5.95))
-    text(s, 6.95, 6.85, 5.95, 0.35, "② 출석 정책 3 조건 평가 (within-subjects)",
-         size=11, bold=True, color=ACCENT_3, align=PP_ALIGN.CENTER)
-
-    text(s, 0.7, 7.25, 12, 0.3,
-         "imen315-syllabus-meta-gpvxmznvcygwd9cln2bnjp.streamlit.app",
-         size=9, color=ACCENT, align=PP_ALIGN.CENTER)
+        s.shapes.add_picture(str(path2), Inches(6.95), Inches(2.4), width=Inches(5.95))
+    text(s, 6.95, 6.6, 5.95, 0.35, "출석 정책 비교 화면",
+         size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
+    text(s, 6.95, 6.95, 5.95, 0.3, "3개 정책에서 각각 결석 의도를 골라요",
+         size=10, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 def s_streamlit_demo_2():
     s = slide()
-    header(s, "T1 · LIVE DEMO 2/2", "응답자가 실제로 보는 화면 — 인센티브 & 팀 구성", 22)
+    header(s, "설문 화면 2", "응답자 화면 — 팀장 인센티브 / 팀원 지명", 22)
 
-    text(s, 0.7, 2.2, 12, 0.35,
-         "강의계획서 원문을 그대로 보여주는 두 시나리오.",
-         size=11, color=MUTED)
-
-    # 좌: 인센티브 framing
     path1 = SHOTS / "03_framing.png"
     if path1.exists():
-        s.shapes.add_picture(str(path1), Inches(0.7), Inches(2.65), width=Inches(6.1))
-    text(s, 0.7, 6.85, 6.1, 0.35, "③ 인센티브 표현 — 강의계획서 원문 (gain vs loss)",
-         size=11, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
+        s.shapes.add_picture(str(path1), Inches(0.7), Inches(2.4), width=Inches(6.1))
+    text(s, 0.7, 6.6, 6.1, 0.35, "팀장 인센티브 화면",
+         size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
+    text(s, 0.7, 6.95, 6.1, 0.3, "응답자 절반은 +10 가산, 절반은 모호한 감점 표현",
+         size=10, color=MUTED, align=PP_ALIGN.CENTER)
 
-    # 우: 팀 구성
     path2 = SHOTS / "04_team.png"
     if path2.exists():
-        s.shapes.add_picture(str(path2), Inches(6.95), Inches(2.65), width=Inches(5.95))
-    text(s, 6.95, 6.85, 5.95, 0.35, "④ 팀원 2명 직접 지명 (강의계획서 규칙)",
-         size=11, bold=True, color=ACCENT, align=PP_ALIGN.CENTER)
-
-    text(s, 0.7, 7.25, 12, 0.3,
-         "같은 설문을 Google Forms + Streamlit + Sheets에 동시 배포 → 도구별 응답률 비교",
-         size=9, color=INK_2, align=PP_ALIGN.CENTER)
+        s.shapes.add_picture(str(path2), Inches(6.95), Inches(2.4), width=Inches(5.95))
+    text(s, 6.95, 6.6, 5.95, 0.35, "팀원 직접 지명 화면",
+         size=12, bold=True, color=INK, align=PP_ALIGN.CENTER)
+    text(s, 6.95, 6.95, 5.95, 0.3, "후보 N명 중 2명 지명 (강의계획서 규칙)",
+         size=10, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # 호환: 기존 함수명 유지
@@ -1068,12 +1055,12 @@ def s_t2_student_example():
 
     line(s, 7.0, 4.95, 12.6, 4.95)
 
-    text(s, 7.0, 5.1, 6, 0.4, "1000명 → 각자 다른 4가지 속성 조합",
+    text(s, 7.0, 5.1, 6, 0.4, "1000명 각자 다른 4가지 속성 조합",
          size=11, bold=True, color=ACCENT_2)
     text(s, 7.0, 5.5, 6, 1.6,
-         "→ 김민준 같은 학생은 잘 적응하지만,\n"
-         "→ α=0.08, WM=5 같은 학생은 같은 강의계획서에서 훨씬 큰 어려움.\n"
-         "→ 우리는 이 1000명 중 \"가장 약한 25%\"가 보호되는지 본다.",
+         "김민준 같은 학생은 잘 적응한다.\n"
+         "반면 α=0.08, WM=5인 학생은 같은 강의계획서에서 훨씬 큰 어려움을 겪는다.\n"
+         "1000명 중 가장 약한 25%가 보호되는지를 본다.",
          size=11, color=INK_2, line_spacing=1.4)
 
     text(s, 0.7, 7.25, 12, 0.3,
@@ -1098,15 +1085,14 @@ def s_t2_examples():
         s.shapes.add_picture(str(chart_path), Inches(0.7), Inches(2.85),
                              width=Inches(8.0))
 
-    # 우측 해석
     card(s, 9.0, 2.85, 3.6, 4.0, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
-    text(s, 9.2, 3.0, 3.3, 0.4, "이게 무슨 의미?", size=11, bold=True, color=ACCENT)
+    text(s, 9.2, 3.0, 3.3, 0.4, "차트 해석", size=11, bold=True, color=ACCENT)
     text(s, 9.2, 3.5, 3.3, 2.5,
-         "기존 강의계획서:\n평균 12.5초 vs 하위 22.3초.\n약한 학생이 1.8배 손해.\n\n분산 평가 도입 시:\n평균 10.2초 vs 하위 13.5초.\n격차 1.3배로 감소.",
+         "기존 강의계획서:\n평균 12.5초, 하위 22.3초.\n약한 학생이 1.8배 손해.\n\n분산 평가 도입:\n평균 10.2초, 하위 13.5초.\n격차 1.3배로 감소.",
          size=10, color=INK_2, line_spacing=1.4)
 
     text(s, 0.7, 7.05, 12, 0.4,
-         "→ 보고서 핵심: 우리 개선안은 \"평균\"이 아니라 \"분포의 꼬리\"를 다듬는다",
+         "개선안은 평균이 아니라 분포의 꼬리를 다듬는다",
          size=12, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
 
 
@@ -1122,12 +1108,12 @@ def s_t3_examples():
         s.shapes.add_picture(str(chart_path), Inches(0.7), Inches(2.4),
                              width=Inches(12.0))
 
-    text(s, 0.7, 6.3, 12, 0.4, "💡 한눈에 보이는 차이", size=12, bold=True, color=ACCENT)
+    text(s, 0.7, 6.3, 12, 0.4, "한눈에 보이는 차이", size=12, bold=True, color=ACCENT)
     text(s, 0.7, 6.7, 12, 0.4,
-         "왼쪽 (친분 우선) — 팀장 옆 동그라미들만 분홍색. 친한 사람만 뽑힘.",
+         "왼쪽 (친분 우선): 팀장 주변 노드만 분홍색. 친한 사람만 뽑힘.",
          size=10, color=INK_2)
     text(s, 0.7, 7.05, 12, 0.4,
-         "오른쪽 (프로필 카드) — 그래프 전체에 골고루 분포. 다양한 역량 확보됨.",
+         "오른쪽 (프로필 카드): 그래프 전체에 골고루 분포. 다양한 역량 확보.",
          size=10, color=INK_2)
 
 
