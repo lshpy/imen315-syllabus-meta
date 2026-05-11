@@ -1,4 +1,4 @@
-"""Streamlit 앱 스크린샷 캡처"""
+"""Streamlit 앱 스크린샷 (큰 사이즈 + 상단 포커스)"""
 import asyncio
 from pathlib import Path
 from playwright.async_api import async_playwright
@@ -7,64 +7,53 @@ OUT = Path(__file__).parent / "screenshots"
 OUT.mkdir(exist_ok=True)
 
 
-async def click_by_text(page, text, fallback_role="button"):
+async def click_next(page):
     try:
-        await page.get_by_role(fallback_role, name=text).first.click(timeout=3000)
-        await page.wait_for_timeout(1500)
-    except Exception as e:
-        print(f"  click fail: {text} — {e}")
+        btn = page.get_by_role("button", name="다음")
+        await btn.first.click(timeout=3000)
+        await page.wait_for_timeout(1800)
+    except Exception:
+        pass
 
 
 async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        ctx = await browser.new_context(viewport={"width": 1280, "height": 1600})
+        ctx = await browser.new_context(
+            viewport={"width": 1100, "height": 850},
+            device_scale_factor=2,
+        )
         page = await ctx.new_page()
         await page.goto("http://localhost:8501", wait_until="networkidle", timeout=15000)
-        await page.wait_for_timeout(2000)
+        await page.wait_for_timeout(2200)
 
         # 1) 인트로
-        await page.screenshot(path=str(OUT / "01_intro.png"), full_page=True)
-        print("✅ 01 intro")
+        await page.screenshot(path=str(OUT / "01_intro.png"), clip={"x": 0, "y": 0, "width": 1100, "height": 850})
+        print("✅ 01")
 
         # 시작 버튼
-        await click_by_text(page, "시작하기")
-
-        # 2) 출석 챕터
-        await page.wait_for_timeout(1500)
-        await page.screenshot(path=str(OUT / "02_attendance.png"), full_page=True)
-        print("✅ 02 attendance")
-
-        # 다음
-        await click_by_text(page, "다음")
-
-        # 3) 팀장 인센티브
-        await page.wait_for_timeout(1500)
-        await page.screenshot(path=str(OUT / "03_framing.png"), full_page=True)
-        print("✅ 03 framing")
-
-        await click_by_text(page, "다음")
-
-        # 4) 팀 구성
-        await page.wait_for_timeout(1500)
-        await page.screenshot(path=str(OUT / "04_team.png"), full_page=True)
-        print("✅ 04 team")
-
-        # 멀티셀렉트로 2명 선택은 어렵게 동작 - 스킵하고 마지막 결과 보여주기
-        # 임시로 멀티셀렉트에 값 채우기 시도
         try:
-            await page.evaluate("""
-                // Streamlit multiselect — first 2 options
-                const inputs = document.querySelectorAll('[data-baseweb="select"] input');
-                if (inputs.length > 0) {
-                    inputs[0].click();
-                }
-            """)
+            await page.get_by_role("button", name="시작하기").first.click()
+            await page.wait_for_timeout(1800)
         except Exception:
             pass
 
+        # 2) 출석
+        await page.screenshot(path=str(OUT / "02_attendance.png"), clip={"x": 0, "y": 0, "width": 1100, "height": 850})
+        print("✅ 02")
+        await click_next(page)
+
+        # 3) 인센티브 프레이밍
+        await page.screenshot(path=str(OUT / "03_framing.png"), clip={"x": 0, "y": 0, "width": 1100, "height": 850})
+        print("✅ 03")
+        await click_next(page)
+
+        # 4) 팀 구성
+        await page.screenshot(path=str(OUT / "04_team.png"), clip={"x": 0, "y": 0, "width": 1100, "height": 850})
+        print("✅ 04")
+
         await browser.close()
-        print(f"\n저장 위치: {OUT}")
+        print(f"\n저장: {OUT}")
 
 
 asyncio.run(main())

@@ -962,38 +962,123 @@ def s_t3():
 
 
 # ============================================
-# NEW: Streamlit 데모 (4컷 화면)
+# NEW: Streamlit 데모 — 2장 분리 (크게 보이게)
 # ============================================
-def s_streamlit_demo():
+def s_streamlit_demo_1():
     s = slide()
-    header(s, "T1 · LIVE DEMO", "응답자가 실제로 보는 화면 — Streamlit 학습 MBTI 앱", 21)
+    header(s, "T1 · LIVE DEMO 1/2", "응답자가 실제로 보는 화면 — 인트로 & 출석", 21)
 
-    text(s, 0.7, 2.3, 12, 0.4,
-         "단톡에 링크 풀면 학생들이 이런 화면을 5분 동안 봅니다.",
+    text(s, 0.7, 2.2, 12, 0.35,
+         "단톡에 풀면 학생들이 이렇게 보게 됩니다.",
+         size=11, color=MUTED)
+
+    # 좌: 인트로
+    path1 = SHOTS / "01_intro.png"
+    if path1.exists():
+        s.shapes.add_picture(str(path1), Inches(0.7), Inches(2.65), width=Inches(6.1))
+    text(s, 0.7, 6.85, 6.1, 0.35, "① 인트로 — 16 유형 미리보기 + 시작",
+         size=11, bold=True, color=ACCENT_3, align=PP_ALIGN.CENTER)
+
+    # 우: 출석
+    path2 = SHOTS / "02_attendance.png"
+    if path2.exists():
+        s.shapes.add_picture(str(path2), Inches(6.95), Inches(2.65), width=Inches(5.95))
+    text(s, 6.95, 6.85, 5.95, 0.35, "② 출석 정책 3 조건 평가 (within-subjects)",
+         size=11, bold=True, color=ACCENT_3, align=PP_ALIGN.CENTER)
+
+    text(s, 0.7, 7.25, 12, 0.3,
+         "imen315-syllabus-meta-gpvxmznvcygwd9cln2bnjp.streamlit.app",
+         size=9, color=ACCENT, align=PP_ALIGN.CENTER)
+
+
+def s_streamlit_demo_2():
+    s = slide()
+    header(s, "T1 · LIVE DEMO 2/2", "응답자가 실제로 보는 화면 — 인센티브 & 팀 구성", 22)
+
+    text(s, 0.7, 2.2, 12, 0.35,
+         "강의계획서 원문을 그대로 보여주는 두 시나리오.",
+         size=11, color=MUTED)
+
+    # 좌: 인센티브 framing
+    path1 = SHOTS / "03_framing.png"
+    if path1.exists():
+        s.shapes.add_picture(str(path1), Inches(0.7), Inches(2.65), width=Inches(6.1))
+    text(s, 0.7, 6.85, 6.1, 0.35, "③ 인센티브 표현 — 강의계획서 원문 (gain vs loss)",
+         size=11, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
+
+    # 우: 팀 구성
+    path2 = SHOTS / "04_team.png"
+    if path2.exists():
+        s.shapes.add_picture(str(path2), Inches(6.95), Inches(2.65), width=Inches(5.95))
+    text(s, 6.95, 6.85, 5.95, 0.35, "④ 팀원 2명 직접 지명 (강의계획서 규칙)",
+         size=11, bold=True, color=ACCENT, align=PP_ALIGN.CENTER)
+
+    text(s, 0.7, 7.25, 12, 0.3,
+         "같은 설문을 Google Forms + Streamlit + Sheets에 동시 배포 → 도구별 응답률 비교",
+         size=9, color=INK_2, align=PP_ALIGN.CENTER)
+
+
+# 호환: 기존 함수명 유지
+def s_streamlit_demo():
+    s_streamlit_demo_1()
+    s_streamlit_demo_2()
+
+
+# ============================================
+# NEW: T2 시뮬 입력 예시 — 가상 학생 1명 자세히
+# ============================================
+def s_t2_student_example():
+    s = slide()
+    header(s, "T2 · 시뮬 입력 예시", "가상 학생 1000명 중 1명을 어떻게 설정하는가", 24)
+
+    text(s, 0.7, 2.2, 12, 0.4,
+         "1000명을 모두 똑같이 만들면 의미 없음. 학생마다 인지 능력이 다르게 무작위 배정함.",
          size=12, color=MUTED)
 
-    shots = [
-        ("01_intro.png", "① 인트로 — 16 유형 미리보기 + 시작"),
-        ("02_attendance.png", "② 출석 정책 3 조건 평가 (within)"),
-        ("03_framing.png", "③ 인센티브 표현 — 강의계획서 원문"),
-        ("04_team.png", "④ 팀원 2명 직접 지명 (강의계획서 규칙)"),
-    ]
-    for i, (img, caption) in enumerate(shots):
-        x = 0.7 + (i % 2) * 6.15
-        y = 2.85 + (i // 2) * 2.15
-        path = SHOTS / img
-        if path.exists():
-            s.shapes.add_picture(str(path), Inches(x), Inches(y),
-                                 width=Inches(5.95), height=Inches(1.8))
-        text(s, x, y + 1.82, 5.95, 0.25, caption,
-             size=10, bold=True, color=INK_2, align=PP_ALIGN.CENTER)
+    # 좌: 학생 #1 예시 카드
+    card(s, 0.7, 2.85, 6.0, 4.3, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
+    text(s, 0.95, 3.0, 5.5, 0.4, "예시 학생 #1 · '김민준'", size=14, bold=True, color=ACCENT)
+    text(s, 0.95, 3.4, 5.5, 0.35, "코드가 1000명을 만들 때 첫 번째 학생", size=10, color=MUTED)
 
-    text(s, 0.7, 7.0, 12, 0.4,
-         "동일 설문을 Google Forms·Sheets에도 동시 배포 → 도구별 응답률 차이로 인터페이스 효과 측정",
-         size=10, color=INK_2, align=PP_ALIGN.CENTER)
-    text(s, 0.7, 7.3, 12, 0.3,
-         "라이브 URL — imen315-syllabus-meta-gpvxmznvcygwd9cln2bnjp.streamlit.app",
-         size=9, color=ACCENT, align=PP_ALIGN.CENTER)
+    line(s, 0.95, 3.85, 6.5, 3.85, color=ACCENT)
+
+    attrs = [
+        ("학습률 α", "0.18", "평균(0.15)보다 약간 높음 — 새 경험을 빨리 받아들임"),
+        ("망각 d", "0.42", "평균(0.50)보다 낮음 — 기억이 천천히 사라짐"),
+        ("작업 기억 WM", "8 chunks", "평균(7)보다 1 큼 — 한 번에 더 많이 처리"),
+        ("동기 motivation", "0.67", "평균(0.50)보다 높음 — 자발적 학습 의지 있음"),
+    ]
+    for i, (name, value, desc) in enumerate(attrs):
+        y = 4.0 + i * 0.75
+        text(s, 0.95, y, 2.5, 0.35, name, size=11, bold=True, color=INK)
+        text(s, 3.4, y, 1.5, 0.4, value, size=18, bold=True, color=ACCENT)
+        text(s, 0.95, y + 0.4, 5.5, 0.3, desc, size=9, color=INK_2)
+
+    # 우: 코드 + 해석
+    text(s, 7.0, 2.85, 6, 0.4, "어떻게 무작위 추출하는가 (실제 코드)",
+         size=11, bold=True, color=ACCENT)
+
+    text(s, 7.0, 3.3, 6, 1.5,
+         "rng = np.random.default_rng(42)\n"
+         "alpha = rng.normal(0.15, 0.05)\n"
+         "d     = rng.normal(0.50, 0.10)\n"
+         "WM    = rng.choice([5,6,7,8,9])\n"
+         "motiv = rng.normal(0.50, 0.20)",
+         size=11, color=INK_2, line_spacing=1.4)
+
+    line(s, 7.0, 4.95, 12.6, 4.95)
+
+    text(s, 7.0, 5.1, 6, 0.4, "1000명 → 각자 다른 4가지 속성 조합",
+         size=11, bold=True, color=ACCENT_2)
+    text(s, 7.0, 5.5, 6, 1.6,
+         "→ 김민준 같은 학생은 잘 적응하지만,\n"
+         "→ α=0.08, WM=5 같은 학생은 같은 강의계획서에서 훨씬 큰 어려움.\n"
+         "→ 우리는 이 1000명 중 \"가장 약한 25%\"가 보호되는지 본다.",
+         size=11, color=INK_2, line_spacing=1.4)
+
+    text(s, 0.7, 7.25, 12, 0.3,
+         "이 설정값은 문헌 표준값 · T1 설문으로 본 강 학생 실제 값을 수집해 보정 예정",
+         size=9, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -1233,11 +1318,13 @@ s_t1_attend()                     # 16
 s_t1_framing()                    # 17
 s_t1_team()                       # 18
 s_t1_eval()                       # 19
-s_streamlit_demo()                # 20 NEW (A/B/C 도구 비교는 이 안에서 언급)
+s_streamlit_demo_1()              # 20 NEW
+s_streamlit_demo_2()              # 21 NEW
 s_t2()                            # 22
-s_t2_examples()                   # 23 NEW
-s_t3()                            # 24
-s_t3_examples()                   # 25 NEW (or trim if too much)
+s_t2_student_example()            # 23 NEW · 가상 학생 1명 예시
+s_t2_examples()                   # 24 NEW · 분포 효과 차트
+s_t3()                            # 25
+s_t3_examples()                   # 26 NEW
 
 out = ROOT / "kickoff_2026-05-11.pptx"
 prs.save(out)
