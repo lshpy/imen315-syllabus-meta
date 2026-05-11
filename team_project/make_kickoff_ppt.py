@@ -284,10 +284,10 @@ def s_theory_utility_intuition():
     ]
     for i, (emoji, name, desc) in enumerate(examples):
         x = 0.7 + i * 4.1
-        card(s, x, 5.55, 3.9, 1.55)
-        text(s, x + 0.25, 5.7, 1, 0.5, emoji, size=24)
-        text(s, x + 1.05, 5.7, 2.7, 0.4, name, size=14, bold=True, color=ACCENT_3)
-        text(s, x + 0.25, 6.25, 3.5, 0.85, desc, size=10, color=INK_2, line_spacing=1.3)
+        card(s, x, 5.55, 3.9, 1.55, accent=ACCENT_3)
+        text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
+        text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT_3)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -301,7 +301,7 @@ def s_theory_utility():
     text(s, 0.7, 2.3, 5.7, 0.35, "수업 6주차 · 가변비율 강화 (Variable-Ratio Reinforcement)",
          size=11, bold=True, color=ACCENT_3)
 
-    card(s, 0.7, 2.75, 5.95, 1.4, fill=PAPER)
+    card(s, 0.7, 2.75, 5.95, 1.4, fill=RGBColor(0xF7, 0xF8, 0xFB), border_width=0)
     text(s, 0.95, 2.85, 5.5, 0.35, "핵심 공식", size=10, bold=True, color=MUTED)
     fp = FORMULAS / "f_utility.png"
     if fp.exists():
@@ -368,10 +368,10 @@ def s_theory_forget_intuition():
     ]
     for i, (emoji, name, desc) in enumerate(examples):
         x = 0.7 + i * 4.1
-        card(s, x, 5.55, 3.9, 1.55)
-        text(s, x + 0.25, 5.7, 1, 0.5, emoji, size=24)
-        text(s, x + 1.05, 5.7, 2.7, 0.4, name, size=14, bold=True, color=ACCENT_4)
-        text(s, x + 0.25, 6.25, 3.5, 0.85, desc, size=10, color=INK_2, line_spacing=1.3)
+        card(s, x, 5.55, 3.9, 1.55, accent=ACCENT_4)
+        text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
+        text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT_4)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -384,7 +384,7 @@ def s_theory_forget():
     text(s, 0.7, 2.3, 5.7, 0.35, "수업 5–7주차 · Base-level Activation (Anderson)",
          size=11, bold=True, color=ACCENT_4)
 
-    card(s, 0.7, 2.75, 5.95, 1.4, fill=PAPER)
+    card(s, 0.7, 2.75, 5.95, 1.4, fill=RGBColor(0xF7, 0xF8, 0xFB), border_width=0)
     text(s, 0.95, 2.85, 5.5, 0.35, "핵심 공식", size=10, bold=True, color=MUTED)
     fp = FORMULAS / "f_memory.png"
     if fp.exists():
@@ -448,10 +448,10 @@ def s_theory_wm_intuition():
     ]
     for i, (emoji, name, desc) in enumerate(examples):
         x = 0.7 + i * 4.1
-        card(s, x, 5.55, 3.9, 1.55)
-        text(s, x + 0.25, 5.7, 1, 0.5, emoji, size=24)
-        text(s, x + 1.05, 5.7, 2.7, 0.4, name, size=14, bold=True, color=ACCENT)
-        text(s, x + 0.25, 6.25, 3.5, 0.85, desc, size=10, color=INK_2, line_spacing=1.3)
+        card(s, x, 5.55, 3.9, 1.55, accent=ACCENT)
+        text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
+        text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
@@ -528,10 +528,10 @@ def s_theory_framing_intuition():
     ]
     for i, (emoji, name, desc) in enumerate(examples):
         x = 0.7 + i * 4.1
-        card(s, x, 5.55, 3.9, 1.55)
-        text(s, x + 0.25, 5.7, 1, 0.5, emoji, size=24)
-        text(s, x + 1.05, 5.7, 2.7, 0.4, name, size=14, bold=True, color=ACCENT_2)
-        text(s, x + 0.25, 6.25, 3.5, 0.85, desc, size=10, color=INK_2, line_spacing=1.3)
+        card(s, x, 5.55, 3.9, 1.55, accent=ACCENT_2)
+        text(s, x + 0.25, 5.75, 1, 0.5, emoji, size=28)
+        text(s, x + 1.15, 5.78, 2.7, 0.4, name, size=15, bold=True, color=ACCENT_2)
+        text(s, x + 0.25, 6.3, 3.5, 0.85, desc, size=11, color=INK_2, line_spacing=1.35)
 
 
 # ============================================
