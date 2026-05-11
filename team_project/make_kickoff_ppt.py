@@ -1069,31 +1069,100 @@ def s_t2_student_example():
 
 
 # ============================================
-# NEW: T2 시뮬 결과 예시 — 분포 효과
+# T2 시뮬 결과 예시 — 분포 효과 (자세히)
 # ============================================
 def s_t2_examples():
     s = slide()
-    header(s, "T2 · 시뮬 결과 예시", "왜 평균만 보면 안 되는가 — 분포 효과 차트", 23)
+    header(s, "T2 · 시뮬 결과 예시", "평균만 보면 가려지는 진실 — 분포 효과 차트", 25)
 
-    text(s, 0.7, 2.3, 12, 0.4,
-         "같은 개선안도 평균 학생에게는 별 차이 없지만, 약한 학생에게는 큰 도움이 된다.",
-         size=12, color=MUTED)
+    text(s, 0.7, 2.2, 12, 0.4,
+         "같은 강의계획서를 받아도 학생마다 결과가 다르다. 평균보다 \"가장 약한 학생\"에서 차이가 크다.",
+         size=12, color=INK_2)
 
-    # 메인 차트
+    # 차트는 약간 작게
     chart_path = CHARTS / "chart_distribution.png"
     if chart_path.exists():
         s.shapes.add_picture(str(chart_path), Inches(0.7), Inches(2.85),
-                             width=Inches(8.0))
+                             width=Inches(7.0))
 
-    card(s, 9.0, 2.85, 3.6, 4.0, fill=RGBColor(0xEE, 0xEA, 0xFE), border=ACCENT)
-    text(s, 9.2, 3.0, 3.3, 0.4, "차트 해석", size=11, bold=True, color=ACCENT)
-    text(s, 9.2, 3.5, 3.3, 2.5,
-         "기존 강의계획서:\n평균 12.5초, 하위 22.3초.\n약한 학생이 1.8배 손해.\n\n분산 평가 도입:\n평균 10.2초, 하위 13.5초.\n격차 1.3배로 감소.",
+    # 우측 — 자세한 해석 (스토리)
+    card(s, 7.95, 2.85, 4.7, 4.2, fill=RGBColor(0xFA, 0xFB, 0xFC), border=ACCENT, border_width=0)
+
+    # 학생 비교: 김민준 vs 이서연
+    text(s, 8.15, 3.0, 4.4, 0.35, "두 학생을 따라가 봅시다", size=11, bold=True, color=ACCENT)
+
+    # 김민준 박스
+    card(s, 8.15, 3.45, 4.3, 1.55, fill=RGBColor(0xEC, 0xFD, 0xF5), border=ACCENT_3)
+    text(s, 8.35, 3.55, 4, 0.35, "🟢 김민준 (평균 학생)", size=11, bold=True, color=ACCENT_3)
+    text(s, 8.35, 3.9, 4, 1.0,
+         "기존 강의계획서: 12.5초만에 답 떠올림\n"
+         "분산 평가 도입: 10.2초 (조금 빨라짐)",
          size=10, color=INK_2, line_spacing=1.4)
 
-    text(s, 0.7, 7.05, 12, 0.4,
-         "개선안은 평균이 아니라 분포의 꼬리를 다듬는다",
-         size=12, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
+    # 이서연 박스
+    card(s, 8.15, 5.1, 4.3, 1.55, fill=RGBColor(0xFD, 0xE8, 0xF5), border=ACCENT_2)
+    text(s, 8.35, 5.2, 4, 0.35, "🔴 이서연 (약한 학생)", size=11, bold=True, color=ACCENT_2)
+    text(s, 8.35, 5.55, 4, 1.0,
+         "기존 강의계획서: 22.3초 (1.8배 손해)\n"
+         "분산 평가 도입: 13.5초 (대폭 개선)",
+         size=10, color=INK_2, line_spacing=1.4)
+
+    text(s, 8.15, 6.75, 4.4, 0.35,
+         "→ 같은 개선안인데 효과는 약한 학생에게 더 큼",
+         size=10, bold=True, color=INK)
+
+    text(s, 0.7, 7.15, 12, 0.4,
+         "결국 우리가 보는 것: 강의계획서가 누구를 가장 힘들게 하는가, 개선안이 그걸 줄이는가",
+         size=11, bold=True, color=ACCENT_2, align=PP_ALIGN.CENTER)
+
+
+# ============================================
+# NEW: 개선안 3가지 (이론에서 자동 도출)
+# ============================================
+def s_improvements():
+    s = slide()
+    header(s, "OUR PROPOSAL", "우리가 제안하는 개선안 3가지", 20)
+
+    text(s, 0.7, 2.25, 12, 0.4,
+         "강의계획서의 4가지 규칙을 분석해보니, 이론에서 자동으로 개선안이 도출됩니다.",
+         size=12, color=INK_2)
+
+    items = [
+        ("01", "분산 평가", "격주 퀴즈 6회 + 기말 40%",
+         "기말 한 번이 아니라 격주마다 작은 퀴즈로 나누어 본다.",
+         "기억이 사라지기 전에 다시 인출 → 학기말 벼락치기 방지",
+         "Forgetting Curve · 분산 학습", ACCENT_4),
+        ("02", "프로필 카드", "후보별 4가지 정보를 시각화",
+         "팀장이 후보 평가할 때 역량·시간·관심·경험을 카드로 제공.",
+         "머리에 다 담을 필요 없이 외부 인터페이스로 비교 가능",
+         "Working Memory · 7±2 한계 우회", ACCENT),
+        ("03", "명확한 가산", "감점 표현 → +10 가산으로 통일",
+         "모호한 \"현저히 낮은 경우 감점\" 대신 명확한 가산만 사용.",
+         "학생이 모호한 위협 회피가 아니라 보상으로 동기 부여",
+         "Framing Effect · 손실 회피 제거", ACCENT_2),
+    ]
+    for i, (num, name, what, mech, effect, theory, color) in enumerate(items):
+        x = 0.7 + i * 4.1
+        card(s, x, 2.85, 3.9, 4.2)
+        bar = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(2.85), Inches(3.9), Inches(0.6))
+        bar.fill.solid(); bar.fill.fore_color.rgb = color; bar.line.fill.background()
+        text(s, x + 0.25, 2.95, 1.0, 0.4, num, size=14, bold=True, color=WHITE)
+        text(s, x + 0.95, 2.95, 3, 0.4, name, size=14, bold=True, color=WHITE)
+
+        text(s, x + 0.25, 3.55, 3.5, 0.4, what, size=10, bold=True, color=INK)
+        text(s, x + 0.25, 4.05, 3.5, 1.1, mech, size=10, color=INK_2, line_spacing=1.4)
+
+        line(s, x + 0.25, 5.3, x + 3.65, 5.3)
+        text(s, x + 0.25, 5.4, 3.5, 0.35, "효과", size=9, bold=True, color=color)
+        text(s, x + 0.25, 5.7, 3.5, 0.8, effect, size=9, color=INK_2, line_spacing=1.3)
+
+        line(s, x + 0.25, 6.55, x + 3.65, 6.55)
+        text(s, x + 0.25, 6.6, 3.5, 0.35, "근거 이론", size=9, bold=True, color=color)
+        text(s, x + 0.25, 6.9, 3.5, 0.35, theory, size=9, color=INK_2)
+
+    text(s, 0.7, 7.2, 12, 0.3,
+         "T1 설문은 이 개선안이 학생 인식을 바꾸는지, T2 시뮬은 약한 학생도 도와주는지 검증",
+         size=10, color=MUTED, align=PP_ALIGN.CENTER)
 
 
 # ============================================
@@ -1304,13 +1373,14 @@ s_t1_attend()                     # 16
 s_t1_framing()                    # 17
 s_t1_team()                       # 18
 s_t1_eval()                       # 19
-s_streamlit_demo_1()              # 20 NEW
-s_streamlit_demo_2()              # 21 NEW
-s_t2()                            # 22
-s_t2_student_example()            # 23 NEW · 가상 학생 1명 예시
-s_t2_examples()                   # 24 NEW · 분포 효과 차트
-s_t3()                            # 25
-s_t3_examples()                   # 26 NEW
+s_improvements()                  # 20 NEW · 개선안 3가지
+s_streamlit_demo_1()              # 21
+s_streamlit_demo_2()              # 22
+s_t2()                            # 23
+s_t2_student_example()            # 24 · 가상 학생 1명 예시
+s_t2_examples()                   # 25 · 분포 효과 차트
+s_t3()                            # 26
+s_t3_examples()                   # 27
 
 out = ROOT / "kickoff_2026-05-11.pptx"
 prs.save(out)
