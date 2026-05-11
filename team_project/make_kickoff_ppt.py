@@ -321,22 +321,19 @@ def s_theory_utility():
          "슬롯머신 — 보상이 \"가끔\" 무작위로 주어질 때\n행동이 가장 강하게 굳어짐",
          size=11, color=INK_2, line_spacing=1.3)
 
-    # 우측: 자연어 설명
     card(s, 6.85, 2.75, 5.75, 4.55, fill=RGBColor(0xEC, 0xFD, 0xF5), border=ACCENT_3)
-    text(s, 7.1, 2.9, 5, 0.4, "강의계획서의 실제 효과",
-         size=11, bold=True, color=ACCENT_3)
-    text(s, 7.1, 3.3, 5.3, 0.55,
-         "\"출석 예정일 외에도 임의로 체크\"",
-         size=14, bold=True, color=INK)
-    text(s, 7.1, 4.0, 5.3, 1.2,
-         "학생은 \"오늘 안 가면 잡힐까\" 알 수 없다.\n슬롯머신과 같은 원리로 매일 출석하게 된다.\n행동이 굳어져 한 학기 내내 유지된다.",
-         size=11, color=INK_2, line_spacing=1.4)
+    text(s, 7.1, 2.95, 5, 0.4, "강의계획서가 만드는 효과", size=13, bold=True, color=ACCENT_3)
+    text(s, 7.1, 3.45, 5.3, 0.6,
+         "\"임의로 출석 체크\"",
+         size=18, bold=True, color=INK)
+    text(s, 7.1, 4.2, 5.3, 1.5,
+         "오늘 안 가면 잡힐지 학생은 모른다.\n슬롯머신과 같은 원리로 매일 출석한다.\n학기 내내 같은 행동이 이어진다.",
+         size=14, color=INK_2, line_spacing=1.45)
 
-    line(s, 7.1, 5.55, 12.4, 5.55, color=ACCENT_3)
-    text(s, 7.1, 5.65, 5, 0.35, "시뮬레이션 결과", size=10, bold=True, color=ACCENT_3)
-    text(s, 7.1, 6.0, 5.3, 0.4, "월요일만 체크하면 출석률 6.7%", size=11, color=INK_2)
-    text(s, 7.1, 6.4, 5.3, 0.4, "랜덤+비공개로 하면 20% (3배 ↑)", size=12, bold=True, color=INK)
-    chip(s, 7.1, 6.85, 2.0, 0.4, "검증할 값", color=ACCENT_3)
+    line(s, 7.1, 5.85, 12.4, 5.85, color=ACCENT_3)
+    text(s, 7.1, 5.95, 5, 0.4, "시뮬레이션 예측", size=12, bold=True, color=ACCENT_3)
+    text(s, 7.1, 6.4, 5.3, 0.4, "고정 일정: 출석률 6.7%", size=14, color=INK_2)
+    text(s, 7.1, 6.85, 5.3, 0.4, "랜덤+비공개: 20% (3배)", size=16, bold=True, color=INK)
 
 
 # ============================================
