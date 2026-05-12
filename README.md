@@ -37,6 +37,19 @@
 
 ---
 
+## 🎮 팀 프로젝트: 가설 2 (Testing Effect) 검증 실험
+
+**🚀 게임 바로 하러 가기 →** **https://imen315-seat-game.netlify.app**
+
+5×5 교실 격자에 연예인 6명의 자리를 외우는 인지심리학 실험.
+"한 번에 학습 + 단일 시험" vs "학습 + 중간 퀴즈" 비교로 단일 기말고사의 효과성 검증.
+
+- 설계 / 코드: [`TrackB/`](TrackB/)
+- 데이터 자동 수집: Google Apps Script → Google Sheets
+- 카운터밸런싱 + 학습시간 통제로 testing effect만 검출
+
+---
+
 ## 프로젝트 구조
 
 ```
@@ -45,7 +58,11 @@ syllabus_meta_project/
 ├── report/
 │   ├── individual_assignment.tex      # LaTeX 소스
 │   └── individual_assignment.pdf      # 제출용 PDF (6페이지)
-└── figures/                           # 참고 그림 (TikZ로 문서 내 생성)
+├── figures/                           # 참고 그림 (TikZ로 문서 내 생성)
+└── TrackB/                            # 팀 프로젝트 실험 게임 (가설 2)
+    ├── index.html                     # 메인 실험 페이지
+    ├── photos/                        # 연예인 사진
+    └── README.md                      # 실험 설계 상세
 ```
 
 ---
