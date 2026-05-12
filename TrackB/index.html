@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IMEN315 교실 자리 외우기 게임</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    margin: 0; padding: 20px;
+    color: #222;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .card {
+    max-width: 640px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  }
+  h1 { font-size: 1.6em; margin-top: 0; }
+  h2 { font-size: 1.3em; color: #d63031; }
+  button {
+    background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-weight: 700;
+    transition: transform 0.15s;
+    box-shadow: 0 4px 12px rgba(253,121,168,0.3);
+  }
+  button:hover:not(:disabled) { transform: translateY(-2px); }
+  button:disabled { background: #bbb; cursor: not-allowed; box-shadow: none; }
+  .info-box {
+    background: #fff5e1;
+    border-left: 4px solid #fdcb6e;
+    padding: 14px 18px;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+  .demo-question { margin-bottom: 24px; }
+  .demo-question label { display: block; margin-bottom: 6px; font-weight: 500; }
+  .demo-question select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  /* 교실 */
+  .classroom {
+    background: linear-gradient(180deg, #e8f4f8 0%, #d4e9f0 100%);
+    padding: 24px 16px 16px;
+    border-radius: 12px;
+    margin: 20px auto;
+    max-width: 480px;
+  }
+  .blackboard {
+    background: #2d3436;
+    color: #fdcb6e;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 6px;
+    margin-bottom: 18px;
+    font-family: "Chalkboard", "Comic Sans MS", cursive;
+    font-size: 1.1em;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .desk {
+    aspect-ratio: 1;
+    background: #f5deb3;
+    border: 2px solid #d4a574;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: 0.15s;
+    user-select: none;
+    overflow: hidden;
+    position: relative;
+    cursor: default;
+  }
+  .desk.empty {
+    background: #faf0e2;
+    color: #d4a574;
+    font-size: 1.8em;
+  }
+  .desk.clickable { cursor: pointer; }
+  .desk.clickable:hover { background: #ffe9c2; transform: scale(1.05); border-color: #f39c12; }
+  .desk.correct { background: #b8e6b8 !important; border-color: #27ae60 !important; animation: pop 0.4s; }
+  .desk.wrong   { background: #ffb3b3 !important; border-color: #e74c3c !important; }
+  @keyframes pop { 0%{transform:scale(0.7);} 50%{transform:scale(1.15);} 100%{transform:scale(1);} }
+
+  .desk img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .desk .name-label {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 0.7em;
+    padding: 2px 0;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  /* 사진 없을 때 fallback */
+  .desk .name-fallback {
+    font-weight: 800;
+    color: #5d4037;
+    font-size: 0.95em;
+    padding: 4px;
+  }
+
+  .target-display {
+    text-align: center;
+    font-size: 1.2em;
+    margin: 20px 0;
+    background: #fff5e1;
+    padding: 16px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .target-display img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fd79a8;
+    vertical-align: middle;
+    margin: 0 12px;
+  }
+  .target-name {
+    color: #d63031;
+    font-size: 1.4em;
+    font-weight: 800;
+    vertical-align: middle;
+  }
+  .timer {
+    text-align: center;
+    color: #d63031;
+    font-size: 1.1em;
+    margin: 14px 0;
+    font-weight: 700;
+  }
+  .progress {
+    height: 8px;
+    background: #ffe5d4;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #fd79a8, #fdcb6e);
+    transition: width 0.3s;
+  }
+  .round-label {
+    text-align: center;
+    color: #d63031;
+    font-weight: 700;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+  }
+  .stage-tag {
+    display: inline-block;
+    background: #fd79a8;
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stage-tag.repeated { background: #00b894; }
+  .compare-box {
+    background: #fff5e1;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ffe5d4;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row.header { font-weight: 700; color: #555; }
+  .result-box {
+    background: linear-gradient(135deg, #fff5e1 0%, #ffe5d4 100%);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  .result-row { display: flex; justify-content: space-around; flex-wrap: wrap; }
+  .result-stat { margin: 10px; }
+  .result-stat-value { display: block; font-size: 1.8em; font-weight: 700; color: #d63031; }
+  .result-stat-label { display: block; font-size: 0.85em; color: #666; }
+  .submit-status {
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-weight: 600;
+  }
+  .submit-success { background: #d4f5dd; color: #1e6b1e; }
+  .submit-fail { background: #ffd4d4; color: #a02020; }
+  .submit-pending { background: #fff3e0; color: #ef6c00; }
+  .celeb-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 16px 0;
+  }
+  .celeb-preview .item {
+    text-align: center;
+  }
+  .celeb-preview img, .celeb-preview .placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fd79a8;
+    display: block;
+    margin: 0 auto;
+  }
+  .celeb-preview .placeholder {
+    background: #fd79a8;
+    color: #fff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+  }
+  .celeb-preview .item-name {
+    font-size: 0.85em;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="app"></div>
+
+<script>
+// ====================================================================
+// ⚙️ Google Apps Script Web App URL을 여기에 붙여넣으세요
+// ====================================================================
+const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwGgUP86lsAEa9y14V-Cqs8BkEJfESPTstq247dQnSUKgd6c7D9ol8tMQtC2fwz2wFq/exec";
+
+// ====================================================================
+// 실험 설정 — 교실 자리 외우기 (Massed vs Spaced Practice)
+// ====================================================================
+const CELEBRITIES = [
+  { name: "카리나",   file: "photos/karina.jpg" },
+  { name: "장원영",   file: "photos/jangwonyoung.png" },
+  { name: "변우석",   file: "photos/byeonwooseok.webp" },
+  { name: "추성훈",   file: "photos/choosunghoon.webp" },
+  { name: "임영웅",   file: "photos/limyoungwoong.jpg" },
+  { name: "설윤",     file: "photos/sullyoon.webp" }
+];
+
+const GRID_SIZE = 5;
+const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
+
+// ★ 인출 연습 (Testing Effect) 설계
+// 두 시행 모두 총 학습 18초 + 시험 6문제. 차이는 "중간 인출 연습" 유무
+const SINGLE_LEARN_TIME       = 18;  // 1차: 18초 한번에 학습 → 6문제 시험
+const INTERLEAVED_STUDY_TIME  = 6;   // 2차: 사이클당 6초 학습
+const INTERLEAVED_QUIZ_PER_CYCLE = 2; // 사이클당 2문제
+const INTERLEAVED_CYCLES      = 3;    // 3사이클 (6초×3=18초, 2×3=6문제)
+
+// ====================================================================
+// 상태
+// ====================================================================
+// ★ 카운터밸런싱: 50% 참여자는 단일→반복, 나머지 50%는 반복→단일
+const state = {
+  participantId: "P" + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*1000),
+  startTime: Date.now(),
+  order: Math.random() < 0.5 ? ["single", "repeated"] : ["repeated", "single"],
+  currentTrialIdx: 0,
+  positions: {},
+  testOrder: [],
+  testResults: { single: [], repeated: [] },        // 최종 시험 결과
+  practiceQuizzes: { single: [], repeated: [] },     // 중간 인출 연습 결과 (B만 사용)
+  learnRoundTimes: { single: [], repeated: [] },
+  post: {},
+  qIndex: 0
+};
+
+function currentType() { return state.order[state.currentTrialIdx]; }
+function trialNum() { return state.currentTrialIdx + 1; }
+function isRepeated() { return currentType() === "repeated"; }
+function tagInfo() {
+  const isRep = isRepeated();
+  return {
+    tagClass: isRep ? "repeated" : "",
+    tagLabel: `${trialNum()}차 시행 · ${isRep ? "학습 + 중간 퀴즈" : "한 번에 학습 + 시험"}`
+  };
+}
+
+function generateNewPositions() {
+  const cells = [...Array(TOTAL_CELLS).keys()];
+  for (let i = cells.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cells[i], cells[j]] = [cells[j], cells[i]];
+  }
+  state.positions = {};
+  CELEBRITIES.forEach((c, i) => { state.positions[c.name] = cells[i]; });
+  state.testOrder = [...CELEBRITIES].sort(() => Math.random() - 0.5);
+}
+
+const app = document.getElementById("app");
+
+// ====================================================================
+// 책상 렌더링 (사진 + fallback)
+// ====================================================================
+function deskWithCeleb(idx, celeb) {
+  return `
+    <div class="desk" data-idx="${idx}">
+      <img src="${celeb.file}" alt="${celeb.name}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="name-fallback" style="display:none;">${celeb.name}</div>
+      <div class="name-label">${celeb.name}</div>
+    </div>
+  `;
+}
+
+function renderClassroom(showCelebs, clickable) {
+  const cells = [];
+  for (let i = 0; i < TOTAL_CELLS; i++) {
+    const celebHere = CELEBRITIES.find(c => state.positions[c.name] === i);
+    if (showCelebs && celebHere) {
+      cells.push(deskWithCeleb(i, celebHere));
+    } else if (clickable) {
+      cells.push(`<div class="desk empty clickable" data-idx="${i}">🪑</div>`);
+    } else {
+      cells.push(`<div class="desk empty" data-idx="${i}">🪑</div>`);
+    }
+  }
+  return `
+    <div class="classroom">
+      <div class="blackboard">📋 칠판</div>
+      <div class="grid">${cells.join("")}</div>
+    </div>
+  `;
+}
+
+// ====================================================================
+// 화면 1: 시작 안내
+// ====================================================================
+function screenIntro() {
+  const previewHtml = CELEBRITIES.map(c => `
+    <div class="item">
+      <img src="${c.file}" alt="${c.name}"
+           onerror="this.outerHTML='<div class=\\'placeholder\\'>${c.name}</div>'">
+      <div class="item-name">${c.name}</div>
+    </div>
+  `).join("");
+
+  app.innerHTML = `
+    <h1>🎓 교실 자리 외우기 게임</h1>
+    <p style="text-align:center;color:#666;">스타들이 우리 반에 잠깐 들렀어요! 누가 어디 앉았는지 외워보세요 👀</p>
+
+    <div class="celeb-preview">${previewHtml}</div>
+
+    <div class="info-box">
+      <b>🎯 미션:</b> 5×5 교실에서 6명 스타가 앉은 자리 외우기<br>
+      <b>⏱ 소요 시간:</b> 약 3분<br>
+      <b>🎮 진행:</b> <b>2번</b>의 시행을 무작위 순서로 경험합니다.<br>
+      ① <b>한 번에 학습</b> (18초) → 최종 시험 (6문제)<br>
+      ② <b>학습 (6초) + 중간 퀴즈 (2문제)</b> × 3사이클 → 최종 시험 (6문제)<br>
+      <small style="color:#666;">※ 두 시행 모두 <b>학습 시간 18초 + 최종 시험 6문제</b>로 동일합니다.</small>
+    </div>
+    <button onclick="startNextTrial()">게임 시작 🚀</button>
+  `;
+}
+
+// ====================================================================
+// 시행 시작 (순서는 카운터밸런싱으로 무작위 배정됨)
+// ====================================================================
+function startNextTrial() {
+  generateNewPositions();
+  const isRep = isRepeated();
+  const info = tagInfo();
+  const isFirst = trialNum() === 1;
+  const headline = isFirst ? "누가 어디 앉았는지 외워주세요" : "새로운 자리 배치를 외워주세요";
+
+  if (isRep) {
+    // 학습 + 중간 퀴즈 (3사이클)
+    app.innerHTML = `
+      <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+      <h2>👀 ${headline}</h2>
+      <p>이번엔 <b>${INTERLEAVED_STUDY_TIME}초 학습 → ${INTERLEAVED_QUIZ_PER_CYCLE}문제 퀴즈</b>를 <b>${INTERLEAVED_CYCLES}사이클</b> 반복한 후,<br>
+      마지막에 <b>최종 시험 ${CELEBRITIES.length}문제</b>를 봐요.</p>
+      <button onclick="startInterleavedTrial()">시작 →</button>
+    `;
+  } else {
+    // 한 번에 학습 → 마지막에 시험
+    app.innerHTML = `
+      <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+      <h2>👀 ${headline}</h2>
+      <p><b>${SINGLE_LEARN_TIME}초 동안 1번에</b> 보여드립니다. 끝나면 <b>${CELEBRITIES.length}문제</b>를 풀어요. 집중!</p>
+      <button onclick="showLearnRound(1, 1, 'single', ${SINGLE_LEARN_TIME}, startTest)">학습 시작 →</button>
+    `;
+  }
+}
+
+// ====================================================================
+// 인출 연습 모드 (학습 + 중간 퀴즈 × 3사이클)
+// ====================================================================
+function startInterleavedTrial() {
+  state.qIndex = 0;
+  runInterleavedCycle();
+}
+
+function showFinalTestIntro() {
+  const info = tagInfo();
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <h2>🎯 최종 시험!</h2>
+    <p>중간 퀴즈는 끝났어요. 이제 <b>전체 ${CELEBRITIES.length}명에 대한 최종 시험</b>을 봅니다.<br>
+    인출 연습이 얼마나 도움이 되었는지 확인해볼게요 💪</p>
+    <button onclick="showTestQuestion()">최종 시험 시작 →</button>
+  `;
+}
+
+function runInterleavedCycle() {
+  if (state.qIndex >= CELEBRITIES.length) {
+    // 인출 연습 6개 끝 → 최종 시험으로 전환
+    state.qIndex = 0;
+    state.testOrder = [...CELEBRITIES].sort(() => Math.random() - 0.5);
+    showFinalTestIntro();
+    return;
+  }
+  const startedAt = performance.now();
+  const info = tagInfo();
+  const cycleNum = Math.floor(state.qIndex / INTERLEAVED_QUIZ_PER_CYCLE) + 1;
+
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <div class="round-label">📖 학습 ${cycleNum} / ${INTERLEAVED_CYCLES}</div>
+    <div class="timer" id="timer">남은 시간: ${INTERLEAVED_STUDY_TIME}초</div>
+    ${renderClassroom(true, false)}
+  `;
+
+  let remaining = INTERLEAVED_STUDY_TIME;
+  const timerEl = document.getElementById("timer");
+  const iv = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(iv);
+      const elapsed = ((performance.now() - startedAt) / 1000).toFixed(2);
+      state.learnRoundTimes.repeated.push(elapsed);
+      showInterleavedQuiz(0);
+    } else {
+      timerEl.textContent = `남은 시간: ${remaining}초`;
+    }
+  }, 1000);
+}
+
+function showInterleavedQuiz(quizInCycle) {
+  const target = state.testOrder[state.qIndex];
+  const correctIdx = state.positions[target.name];
+  const startTime = performance.now();
+  let firstMoveTime = null;
+  const info = tagInfo();
+  const cycleNum = Math.floor(state.qIndex / INTERLEAVED_QUIZ_PER_CYCLE) + 1;
+
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <div class="round-label">📝 퀴즈 ${state.qIndex + 1} / ${CELEBRITIES.length} (사이클 ${cycleNum})</div>
+    <div class="target-display">
+      <img src="${target.file}" alt="${target.name}" onerror="this.style.display='none'">
+      <span class="target-name">${target.name}</span> 은(는) 어디에 앉았나요? 🪑
+    </div>
+    ${renderClassroom(false, true)}
+  `;
+
+  const cells = document.querySelectorAll(".desk.clickable");
+  cells.forEach(cell => {
+    cell.addEventListener("mouseenter", () => {
+      if (firstMoveTime === null) firstMoveTime = performance.now();
+    }, { once: true });
+
+    cell.addEventListener("click", () => {
+      const clickedIdx = parseInt(cell.dataset.idx);
+      const clickTime = performance.now();
+      const correct = clickedIdx === correctIdx ? 1 : 0;
+
+      cell.classList.add(correct ? "correct" : "wrong");
+      cell.innerHTML = `<div class="name-fallback">${target.name}</div>`;
+      if (!correct) {
+        const correctCell = document.querySelector(`.desk[data-idx="${correctIdx}"]`);
+        correctCell.classList.add("correct");
+        correctCell.innerHTML = `<div class="name-fallback">${target.name}</div>`;
+      }
+
+      // 인출 연습 결과는 practiceQuizzes에 저장 (최종 시험과 분리)
+      state.practiceQuizzes[currentType()].push({
+        celeb: target.name,
+        correctIdx,
+        clickedIdx,
+        correct,
+        firstMoveMs: firstMoveTime !== null ? Math.round(firstMoveTime - startTime) : null,
+        clickMs: Math.round(clickTime - startTime),
+        orderShown: state.qIndex + 1,
+        cycle: cycleNum
+      });
+
+      cells.forEach(c => c.classList.remove("clickable"));
+
+      setTimeout(() => {
+        state.qIndex++;
+        if (quizInCycle < INTERLEAVED_QUIZ_PER_CYCLE - 1) {
+          // 같은 사이클의 다음 퀴즈
+          showInterleavedQuiz(quizInCycle + 1);
+        } else {
+          // 사이클 끝 → 다음 사이클 학습 (또는 시험 종료)
+          runInterleavedCycle();
+        }
+      }, 700);
+    });
+  });
+}
+
+// ====================================================================
+// 학습 라운드
+// ====================================================================
+function showLearnRound(round, total, key, learnTime, onComplete) {
+  const startedAt = performance.now();
+  const info = tagInfo();
+
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <div class="round-label">${total === 1 ? "👀 자리 배치 확인" : `👀 학습 ${round} / ${total} 회차`}</div>
+    <div class="timer" id="timer">남은 시간: ${learnTime}초</div>
+    ${renderClassroom(true, false)}
+  `;
+
+  let remaining = learnTime;
+  const timerEl = document.getElementById("timer");
+  const interval = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(interval);
+      const elapsed = ((performance.now() - startedAt) / 1000).toFixed(2);
+      state.learnRoundTimes[key].push(elapsed);
+      if (round < total) showRest(round, total, key, learnTime, onComplete);
+      else onComplete();
+    } else {
+      timerEl.textContent = `남은 시간: ${remaining}초`;
+    }
+  }, 1000);
+}
+
+function showRest(round, total, key, learnTime, onComplete) {
+  let rest = REST_BETWEEN_ROUNDS;
+  const info = tagInfo();
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <div class="round-label">⏸ 잠깐 쉬어요</div>
+    <div style="text-align:center;font-size:5em;margin:60px 0;" id="restTimer">${rest}</div>
+    <p style="text-align:center;color:#666;">다음 라운드 준비 중...</p>
+  `;
+  const el = document.getElementById("restTimer");
+  const iv = setInterval(() => {
+    rest--;
+    if (rest <= 0) {
+      clearInterval(iv);
+      showLearnRound(round + 1, total, key, learnTime, onComplete);
+    } else {
+      el.textContent = rest;
+    }
+  }, 1000);
+}
+
+// ====================================================================
+// 시험 단계
+// ====================================================================
+function startTest() {
+  state.qIndex = 0;
+  const info = tagInfo();
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <h2>🎯 이제 시험!</h2>
+    <p>스타 사진/이름이 뜨면 <b>그 사람이 앉았던 자리</b>를 클릭해주세요. ${CELEBRITIES.length}문제입니다.</p>
+    <button onclick="showTestQuestion()">시작 →</button>
+  `;
+}
+
+function showTestQuestion() {
+  const target = state.testOrder[state.qIndex];
+  const correctIdx = state.positions[target.name];
+  const startTime = performance.now();
+  let firstMoveTime = null;
+  const info = tagInfo();
+
+  app.innerHTML = `
+    <span class="stage-tag ${info.tagClass}">${info.tagLabel}</span>
+    <div class="round-label">문제 ${state.qIndex + 1} / ${CELEBRITIES.length}</div>
+    <div class="target-display">
+      <img src="${target.file}" alt="${target.name}"
+           onerror="this.style.display='none'">
+      <span class="target-name">${target.name}</span> 은(는) 어디에 앉았나요? 🪑
+    </div>
+    ${renderClassroom(false, true)}
+  `;
+
+  const cells = document.querySelectorAll(".desk.clickable");
+  cells.forEach(cell => {
+    cell.addEventListener("mouseenter", () => {
+      if (firstMoveTime === null) firstMoveTime = performance.now();
+    }, { once: true });
+
+    cell.addEventListener("click", () => {
+      const clickedIdx = parseInt(cell.dataset.idx);
+      const clickTime = performance.now();
+      const correct = clickedIdx === correctIdx ? 1 : 0;
+
+      cell.classList.add(correct ? "correct" : "wrong");
+      cell.innerHTML = `<div class="name-fallback">${target.name}</div>`;
+      if (!correct) {
+        const correctCell = document.querySelector(`.desk[data-idx="${correctIdx}"]`);
+        correctCell.classList.add("correct");
+        correctCell.innerHTML = `<div class="name-fallback">${target.name}</div>`;
+      }
+
+      const key = currentType();
+      state.testResults[key].push({
+        celeb: target.name,
+        correctIdx,
+        clickedIdx,
+        correct,
+        firstMoveMs: firstMoveTime !== null ? Math.round(firstMoveTime - startTime) : null,
+        clickMs: Math.round(clickTime - startTime),
+        orderShown: state.qIndex + 1
+      });
+
+      cells.forEach(c => c.classList.remove("clickable"));
+
+      setTimeout(() => {
+        state.qIndex++;
+        if (state.qIndex < CELEBRITIES.length) showTestQuestion();
+        else trialComplete();
+      }, 700);
+    });
+  });
+}
+
+// ====================================================================
+// 시행 종료 분기
+// ====================================================================
+function trialComplete() {
+  const justFinishedKey = currentType();
+  state.currentTrialIdx++;
+
+  if (state.currentTrialIdx < 2) {
+    // 1차 끝, 2차로 넘어가기 전 중간 결과
+    const results = state.testResults[justFinishedKey];
+    const correct = results.filter(r => r.correct === 1).length;
+    const avgMs = Math.round(results.reduce((s, r) => s + r.clickMs, 0) / CELEBRITIES.length);
+    const nextIsRep = state.order[state.currentTrialIdx] === "repeated";
+    const nextDesc = nextIsRep
+      ? `이번엔 <b>${INTERLEAVED_STUDY_TIME}초 학습 → ${INTERLEAVED_QUIZ_PER_CYCLE}문제</b>를 <b>${INTERLEAVED_CYCLES}사이클</b> 반복해요!`
+      : `이번엔 <b>${SINGLE_LEARN_TIME}초 동안 한 번에</b> 보여드린 후 ${CELEBRITIES.length}문제를 풀어요!`;
+    app.innerHTML = `
+      <h2>1차 시행 완료! 🎯</h2>
+      <div class="result-box">
+        <div class="result-row">
+          <div class="result-stat">
+            <span class="result-stat-value">${correct}/${CELEBRITIES.length}</span>
+            <span class="result-stat-label">정답</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-value">${(avgMs/1000).toFixed(2)}s</span>
+            <span class="result-stat-label">평균 응답시간</span>
+          </div>
+        </div>
+      </div>
+      <p>이제 <b>2차 시행</b>으로 넘어갑니다. 새로운 자리 배치예요.<br>${nextDesc}</p>
+      <button onclick="startNextTrial()">2차 시행 시작 →</button>
+    `;
+  } else {
+    screenPost();
+  }
+}
+
+// ====================================================================
+// 사후 설문
+// ====================================================================
+function screenPost() {
+  app.innerHTML = `
+    <div class="progress"><div class="progress-bar" style="width:95%"></div></div>
+    <h2>🏁 거의 끝났어요!</h2>
+    <div class="demo-question">
+      <label>1. 게임이 얼마나 어려웠나요?</label>
+      <select id="difficulty">
+        <option value="">선택</option>
+        <option>매우 쉬움</option><option>쉬움</option><option>보통</option><option>어려움</option><option>매우 어려움</option>
+      </select>
+    </div>
+    <div class="demo-question">
+      <label>2. 학습 단계에서 얼마나 집중했나요?</label>
+      <select id="focus">
+        <option value="">선택</option>
+        <option>전혀 집중 안함</option><option>조금</option><option>보통</option><option>꽤 집중</option><option>매우 집중</option>
+      </select>
+    </div>
+    <button onclick="finish()">제출하기 ✅</button>
+  `;
+}
+
+function finish() {
+  const d = document.getElementById("difficulty").value;
+  const f = document.getElementById("focus").value;
+  if (!d || !f) { alert("모든 항목을 선택해주세요."); return; }
+  state.post = { difficulty: d, focus: f };
+  screenResults();
+}
+
+// ====================================================================
+// 결과 + 자동 전송
+// ====================================================================
+function screenResults() {
+  const s = state.testResults.single;
+  const r = state.testResults.repeated;
+  const sCorrect = s.filter(x => x.correct === 1).length;
+  const rCorrect = r.filter(x => x.correct === 1).length;
+  const sAvg = Math.round(s.reduce((a, x) => a + x.clickMs, 0) / s.length);
+  const rAvg = Math.round(r.reduce((a, x) => a + x.clickMs, 0) / r.length);
+
+  app.innerHTML = `
+    <h1>🎉 게임 끝!</h1>
+    <div class="compare-box">
+      <div class="compare-row header">
+        <div></div>
+        <div style="text-align:center;">한 번에</div>
+        <div style="text-align:center;">나눠서</div>
+      </div>
+      <div class="compare-row">
+        <div>정답 수</div>
+        <div style="text-align:center;font-weight:600;">${sCorrect}/${CELEBRITIES.length}</div>
+        <div style="text-align:center;font-weight:600;color:#00b894;">${rCorrect}/${CELEBRITIES.length}</div>
+      </div>
+      <div class="compare-row">
+        <div>평균 응답시간</div>
+        <div style="text-align:center;">${(sAvg/1000).toFixed(2)}s</div>
+        <div style="text-align:center;color:#00b894;">${(rAvg/1000).toFixed(2)}s</div>
+      </div>
+    </div>
+
+    <div id="submitStatus" class="submit-status submit-pending">📤 데이터 전송 중...</div>
+
+    <p style="text-align:center;color:#666;font-size:0.9em;margin-top:24px;">
+      참여자 ID: <code>${state.participantId}</code>
+    </p>
+    <p style="text-align:center;color:#888;font-size:0.85em;">
+      참여해주셔서 감사합니다! 친구에게도 공유해주세요 🙏
+    </p>
+
+    <details style="margin-top:30px;">
+      <summary style="cursor:pointer;color:#666;font-size:0.9em;">📋 원본 데이터 (백업)</summary>
+      <button onclick="downloadCSV()" style="margin-top:10px;">CSV 다운로드</button>
+      <pre id="csvPreview" style="background:#f5f5f5;padding:16px;border-radius:6px;overflow-x:auto;font-size:0.8em;margin-top:10px;"></pre>
+    </details>
+  `;
+
+  document.getElementById("csvPreview").textContent = buildCSV();
+  submitData();
+}
+
+async function submitData() {
+  const payload = buildPayload();
+  const statusEl = document.getElementById("submitStatus");
+
+  if (!GOOGLE_SHEET_URL) {
+    statusEl.className = "submit-status submit-fail";
+    statusEl.innerHTML = "⚠️ 자동 전송이 설정되지 않았어요. CSV를 다운로드해주세요.";
+    downloadCSV();
+    return;
+  }
+
+  try {
+    await fetch(GOOGLE_SHEET_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    statusEl.className = "submit-status submit-success";
+    statusEl.innerHTML = "✅ 응답이 성공적으로 전송되었습니다!";
+  } catch (e) {
+    statusEl.className = "submit-status submit-fail";
+    statusEl.innerHTML = "⚠️ 전송 실패. CSV가 자동 다운로드되었습니다.";
+    downloadCSV();
+  }
+}
+
+function buildPayload() {
+  const s = state.testResults.single;
+  const r = state.testResults.repeated;
+  const sCorrect = s.filter(x => x.correct === 1).length;
+  const rCorrect = r.filter(x => x.correct === 1).length;
+  const sAvgMs = Math.round(s.reduce((a, x) => a + x.clickMs, 0) / s.length);
+  const rAvgMs = Math.round(r.reduce((a, x) => a + x.clickMs, 0) / r.length);
+  const sCorrectTimes = s.filter(x => x.correct === 1).map(x => x.clickMs);
+  const rCorrectTimes = r.filter(x => x.correct === 1).map(x => x.clickMs);
+  const sAvgCorrectMs = sCorrectTimes.length ? Math.round(sCorrectTimes.reduce((a,b)=>a+b,0)/sCorrectTimes.length) : "";
+  const rAvgCorrectMs = rCorrectTimes.length ? Math.round(rCorrectTimes.reduce((a,b)=>a+b,0)/rCorrectTimes.length) : "";
+
+  const payload = {
+    participantId: state.participantId,
+    timestamp: new Date().toISOString(),
+    // ★ 카운터밸런싱 순서 (분석 시 순서효과 통제용)
+    orderCondition: state.order.join("_then_"),  // "single_then_repeated" 또는 "repeated_then_single"
+    firstTrial: state.order[0],
+    // 한 번에 학습 + 단일 시험
+    single_design: "massed_18s_x1_finalTest6",
+    single_correct: sCorrect,
+    single_accuracy: (sCorrect / CELEBRITIES.length).toFixed(3),
+    single_avgClickMs: sAvgMs,
+    single_avgCorrectClickMs: sAvgCorrectMs,
+    // 2차: spaced (10초 × 3 = 30초)
+    repeated_design: "interleaved_study6s_quiz2_x3cycles",
+    repeated_correct: rCorrect,
+    repeated_accuracy: (rCorrect / CELEBRITIES.length).toFixed(3),
+    repeated_avgClickMs: rAvgMs,
+    repeated_avgCorrectClickMs: rAvgCorrectMs,
+    // 차이값
+    diff_correct: rCorrect - sCorrect,
+    diff_avgClickMs: sAvgMs - rAvgMs,
+    postDifficulty: state.post.difficulty,
+    postFocus: state.post.focus
+  };
+
+  s.forEach((x, i) => {
+    payload[`single_Q${i+1}_celeb`] = x.celeb;
+    payload[`single_Q${i+1}_correct`] = x.correct;
+    payload[`single_Q${i+1}_clickMs`] = x.clickMs;
+  });
+  r.forEach((x, i) => {
+    payload[`repeated_Q${i+1}_celeb`] = x.celeb;
+    payload[`repeated_Q${i+1}_correct`] = x.correct;
+    payload[`repeated_Q${i+1}_clickMs`] = x.clickMs;
+  });
+
+  // 인출 연습 (중간 퀴즈) 결과 — B조건에서만 채워짐
+  const practice = state.practiceQuizzes.repeated;
+  const pCorrect = practice.filter(x => x.correct === 1).length;
+  payload.practice_totalCorrect = pCorrect;
+  payload.practice_accuracy = practice.length ? (pCorrect / practice.length).toFixed(3) : "";
+  practice.forEach((x, i) => {
+    payload[`practice_Q${i+1}_celeb`] = x.celeb;
+    payload[`practice_Q${i+1}_correct`] = x.correct;
+    payload[`practice_Q${i+1}_clickMs`] = x.clickMs;
+    payload[`practice_Q${i+1}_cycle`] = x.cycle;
+  });
+
+  return payload;
+}
+
+function buildCSV() {
+  const p = buildPayload();
+  const keys = Object.keys(p);
+  const values = keys.map(k => `"${String(p[k]).replace(/"/g,'""')}"`);
+  return keys.join(",") + "\n" + values.join(",");
+}
+
+function downloadCSV() {
+  const csv = buildCSV();
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `IMEN315_${state.participantId}.csv`;
+  a.click();
+}
+
+window.addEventListener("beforeunload", () => {
+  try { localStorage.setItem("IMEN315_backup_" + state.participantId, JSON.stringify(state)); } catch(e) {}
+});
+
+screenIntro();
+</script>
+</body>
+</html>
